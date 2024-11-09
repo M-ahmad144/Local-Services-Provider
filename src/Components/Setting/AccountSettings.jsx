@@ -1,10 +1,14 @@
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
-import axios from "axios"; // Import axios for API calls
+import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const AccountSettings = () => {
   const { currentUser } = useSelector((state) => state.user);
-  const userEmail = currentUser.email; // Get the email from the Redux store
+  const userEmail = currentUser?.email; // Ensure email exists
+  const notifySuccess = (message) => toast.success(message);
+  const notifyError = (message) => toast.error(message);
 
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -15,29 +19,34 @@ const AccountSettings = () => {
 
     // Check if new password and confirm password match
     if (newPassword !== confirmPassword) {
-      alert("New passwords do not match.");
+      notifyError("New passwords do not match.");
       return;
     }
 
     // API call to change the password
     try {
-      const response = await axios.post('http://localhost:8080/api/change-password', {
-        email: userEmail, // Use the email from the Redux store
+      const response = await axios.post("https://backend-qyb4mybn.b4a.run/api/change-password", {
+        email: userEmail,
         currentPassword,
         newPassword,
       });
 
-      // Handle success response (e.g., show a success message)
-      console.log(response.data);
+      // Handle success and error response
+      if (response.data.success) {
+        notifySuccess(response.data.message);
+      } else {
+        notifyError(response.data.message);
+      }
     } catch (error) {
-      // Handle error response (e.g., show an error message)
-      console.error("Error changing password:", error);
+      // Show error message in case of request failure
+      notifyError("Failed to update password. Please try again.");
     }
   };
 
   return (
     <>
-      {/* Heading */}
+      <ToastContainer /> {/* Include ToastContainer to display toasts */}
+
       <h2 className="font-bold text-3xl text-center text-gray-900 md:text-4xl">
         Account Settings
       </h2>
