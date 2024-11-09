@@ -6,6 +6,9 @@ const ActiveOrders = ({in_progressOrders}) => {
     const [activeOrders, setActiveOrders] = useState(in_progressOrders);
     console.log('In progress' , activeOrders)
 
+    const handleOrderComplete = (orderId) => {
+        setActiveOrders(activeOrders.filter(order => order._id !== orderId));
+    };
     return (
         <>
             <h2 className="text-xl font-semibold mb-4">Active Orders</h2>
@@ -14,6 +17,7 @@ const ActiveOrders = ({in_progressOrders}) => {
                     <ActiveOrderCard 
                         key={order._id} 
                         order={order} 
+                        onOrderComplete={handleOrderComplete}
                     />
                 ))}
             </div>
