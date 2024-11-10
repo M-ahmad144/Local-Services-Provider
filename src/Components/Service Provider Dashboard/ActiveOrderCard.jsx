@@ -1,15 +1,22 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import socket from '../sockets/socket';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 
-const ActiveOrderCard = ({ order, onOrderComplete }) => {
+const ActiveOrderCard = ({ order, onOrderComplete, onUpdate }) => {
 
     const { currentUser } = useSelector((state) => state.user);
     const navigate = useNavigate()
     const user_id = currentUser._id;
     const user_type = currentUser.user_type;
+    const [completeLoader, setCompleteLoader] = useState(false)
+    const [buyerCompleteLoader, setbuyerCompleteLoader] = useState(false)
+    const [buyerReportLoader , setbuyerReportLoader] = useState(false)
+
+    console.log(order)
     const handleChatClick = () => {
         if (!socket.connected) {
             console.error("Socket not connected");
@@ -30,22 +37,73 @@ const ActiveOrderCard = ({ order, onOrderComplete }) => {
             socket.emit("joinRoom", newChat._id);
             navigate(`/message/id?query=${encodeURIComponent(chatId)}`);
         });
-      };
+    };
 
-      const handleOrderComplete = async () => {
+    const handleOrderComplete = async () => {
+
+        setCompleteLoader(true)
         try {
             const response = await axios.patch('https://backend-qyb4mybn.b4a.run/order/complete_by_freelancer', {
                 order_id: order._id
             });
 
-            if (response.data.success) {
-                onOrderComplete(order._id); // Callback to update the parent component's state
+            console.log(response)
+
+            if (response.data) {
+                console.log('yes')
+                onUpdate()
             }
+            setCompleteLoader(false)
         } catch (error) {
+            setCompleteLoader(false)
             console.error("Failed to mark order as complete", error);
             alert("Could not mark the order as complete. Please try again.");
         }
     };
+
+    const handleBuyerOrderComplete = async () => {
+
+        setbuyerCompleteLoader(true)
+        try {
+            const response = await axios.patch('https://backend-qyb4mybn.b4a.run/order/confirm_completion', {
+                order_id: order._id,
+                action: "confirm"
+            });
+            if (response.data) {
+                console.log('yes')
+                onUpdate()
+            }
+            setbuyerCompleteLoader(false)
+        } catch (error) {
+            setbuyerCompleteLoader(false)
+            console.error("Failed to mark order as complete", error);
+            alert("Could not mark the order as complete. Please try again.");
+        }
+    };
+
+
+    const handleBuyerOrderDispute = async () => {
+
+        setbuyerReportLoader(true)
+        try {
+            const response = await axios.patch('https://backend-qyb4mybn.b4a.run/order/confirm_completion', {
+                order_id: order._id,
+                action: "dispute"
+            });
+            if (response.data) {
+                console.log('yes')
+                onUpdate()
+            }
+            setbuyerReportLoader(false)
+        } catch (error) {
+            setbuyerReportLoader(false)
+            console.error("Failed to mark order as complete", error);
+            alert("Could not mark the order as complete. Please try again.");
+        }
+    };
+
+
+
 
     return (
         <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
@@ -61,9 +119,9 @@ const ActiveOrderCard = ({ order, onOrderComplete }) => {
 
 
             {/* Price */}
-            <p className="text-xl font-bold text-green-500">Price: {order.accepted_by == 'buyer' && order.service_provider_price !=0 ? order.service_provider_price : order.price}</p>
+            <p className="text-xl font-bold text-green-500">Price: {order.accepted_by == 'buyer' && order.service_provider_price != 0 ? order.service_provider_price : order.price}</p>
 
-            
+
 
             {/* Chat Button */}
             <div className="mt-4">
@@ -73,12 +131,59 @@ const ActiveOrderCard = ({ order, onOrderComplete }) => {
                 >
                     Chat with Client
                 </button>
-                <button
-                    onClick={handleOrderComplete}
-                    className="w-full inline-block px-4 py-2 bg-green-500 text-white rounded-lg text-center"
-                >
-                    Mark as Complete
-                </button>
+
+                {user_type === 'buyer' && order.order_status === 'pending confirmation' ? (
+                    <div className="flex flex-col space-y-2 mt-2">
+                        <p className="text-gray-700 font-medium">
+                            Your service provider has marked this order as <span className="font-semibold text-green-600">completed</span>.
+                            Please confirm or report any issues.
+                        </p>
+
+                        <div className="flex space-x-2">
+                            <button
+                                onClick={handleBuyerOrderComplete}
+                                disabled={buyerCompleteLoader}
+                                className="flex-1 inline-flex items-center justify-center px-4 py-2 bg-green-500 text-white rounded-lg"
+                            >
+                                {buyerCompleteLoader ? (
+                                    <FontAwesomeIcon icon={faSpinner} spin className="h-5 w-5" />
+                                ) : (
+                                    'Mark as Complete'
+                                )}
+                            </button>
+
+                            <button
+                                onClick={handleBuyerOrderDispute}
+                                disabled={buyerCompleteLoader}
+                                className="flex-1 inline-flex items-center justify-center px-4 py-2 bg-red-500 text-white rounded-lg"
+                            >
+                                {buyerReportLoader ? (
+                                    <FontAwesomeIcon icon={faSpinner} spin className="h-5 w-5" />
+                                ) : (
+                                    'Report'
+                                )}
+                            </button>
+                        </div>
+                    </div>
+                ) : user_type == 'buyer' && order.order_status !== 'pending confirmation' ? (
+                    <p className="text-gray-500 mt-1">Waiting for response</p>
+                ) : user_type !== 'buyer' && order.order_status === 'pending confirmation' ? (
+                    <p className="text-gray-500 mt-1">Waiting for response</p>
+                ) : (
+                    <button
+                        onClick={handleOrderComplete}
+                        disabled={completeLoader}
+                        className={`w-full inline-block px-4 py-2 ${completeLoader ? 'bg-green-400' : 'bg-green-500'} text-white rounded-lg text-center mt-1`}
+                    >
+                        {completeLoader ? (
+                            <FontAwesomeIcon icon={faSpinner} spin className="h-5 w-5 mx-auto" />
+                        ) : (
+                            'Mark as Complete'
+                        )}
+                    </button>
+                )}
+
+
             </div>
         </div>
     );

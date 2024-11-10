@@ -16,7 +16,9 @@ const getPending = async (user_id, user_type) => {
 };
 
 const getInProgress = async (user_id, user_type) => {
+    console.log(user_id, user_type)
     const response = await axios.get(`https://backend-qyb4mybn.b4a.run/order/in_progress?user_type=${user_type}&user_id=${user_id}`);
+    console.log(response.data)
     return response.data;
 };
 
@@ -91,6 +93,7 @@ const ServiceProviderDashboard = () => {
                     <ActiveOrders 
                         in_progressOrders = {in_progressOrders}
                         key={`active-orders-${reload}`} 
+                        onUpdate={UpdateReload}
                     />
 
                     <PendingOrders

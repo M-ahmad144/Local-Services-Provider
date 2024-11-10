@@ -32,6 +32,8 @@ const BuyerDashboard = () => {
   const user_id = currentUser._id;
   const user_type = currentUser.user_type;
 
+  console.log(user_id,user_type)
+
   const {
     data: pendingOrders,
     error: pendingOrdersError,
@@ -98,6 +100,7 @@ const BuyerDashboard = () => {
         <div className="space-y-4 md:col-span-3">
           <ActiveOrders
             in_progressOrders={in_progressOrders}
+            onUpdate={UpdateReload}
             key={`active-orders-${reload}`}
           />
           <PendingOrders

@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import ActiveOrderCard from './ActiveOrderCard';
 
-const ActiveOrders = ({in_progressOrders}) => {
+const ActiveOrders = ({in_progressOrders , onUpdate}) => {
     // Sample data for active orders
     const [activeOrders, setActiveOrders] = useState(in_progressOrders);
     console.log('In progress' , activeOrders)
 
     const handleOrderComplete = (orderId) => {
-        setActiveOrders(activeOrders.filter(order => order._id !== orderId));
+        console.log(activeOrders)
     };
     return (
         <>
@@ -18,6 +18,7 @@ const ActiveOrders = ({in_progressOrders}) => {
                         key={order._id} 
                         order={order} 
                         onOrderComplete={handleOrderComplete}
+                        onUpdate = {onUpdate}
                     />
                 ))}
             </div>
