@@ -4,6 +4,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast, ToastContainer } from "react-toastify";
 import { useSelector } from 'react-redux';
 import 'react-toastify/dist/ReactToastify.css';
+import Loader from '../loader';
 
 const fetchUserServices = async (userId) => {
     const response = await fetch(`https://backend-qyb4mybn.b4a.run/serviceProvider/get-user-services/${userId}`);
@@ -25,7 +26,7 @@ const deleteUserService = async (serviceId) => {
 
 const ManageServices = () => {
     const { currentUser } = useSelector((state) => state.user);
-    const userId = currentUser.data._id
+    const userId = currentUser._id
     const [confirmDelete, setConfirmDelete] = useState({ show: false, serviceId: null });
     const navigate = useNavigate();
     const queryClient = useQueryClient();
@@ -80,7 +81,7 @@ const ManageServices = () => {
     };
 
     if (isLoading) {
-        return <div>Loading...</div>;
+        return <Loader/>;
     }
 
     if (error) {

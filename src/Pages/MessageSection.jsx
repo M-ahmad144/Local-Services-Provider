@@ -8,6 +8,7 @@ import socket from "../Components/sockets/socket";
 const ChatSection = () => {
   const [activeChatId, setActiveChatId] = useState(); // Default active chat ID
   const [activeChatTitle, setActiveChatTitle] = useState()
+  const [activeChatImg, setActiveChatImg] = useState();
   const [chats, setChats] = useState({});
   const { currentUser } = useSelector((state) => state.user);
   const userId = currentUser._id
@@ -70,19 +71,23 @@ const ChatSection = () => {
 
   }, [chats, activeChatId]);
 
+  console.log('Image', activeChatImg)
+
   return (
     <div className="flex h-screen text-gray-800 antialiased">
       <div className="flex flex-row w-full h-full overflow-x-hidden">
         <Sidebar
-          activeChat={activeChatId} // Pass the activeChatId
-          setActiveChat={setActiveChatId} // Update the state when the user selects a chat
+          activeChat={activeChatId}
+          setActiveChat={setActiveChatId}
           userId={userId}
           setActiveChatTitle={setActiveChatTitle}
+          setActiveChatImg={setActiveChatImg} // Pass this down
         />
         <ChatArea
           activeChatId={activeChatId} // Use the active chat ID here
           activeChatTitle={activeChatTitle}
           userId={userId}
+          img = {activeChatImg}
         />
       </div>
     </div>
