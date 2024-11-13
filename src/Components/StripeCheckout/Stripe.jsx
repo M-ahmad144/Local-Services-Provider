@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { loadStripe } from "@stripe/stripe-js";
 import axios from "axios";
 import { useSelector } from "react-redux";
@@ -20,8 +20,9 @@ const StripePaymentPage = () => {
   const orderId = currentOrder?._id;
 
   const handleCheckout = async () => {
+    // Input validation for the amount
     if (!amount || isNaN(amount) || amount <= 0) {
-      toast.error("Please enter a valid amount.");
+      toast.error("Please enter a valid amount greater than 0.");
       return;
     }
 
@@ -34,7 +35,7 @@ const StripePaymentPage = () => {
 
     try {
       const stripe = await stripePromise;
-      const amountInCents = parseInt(amount) * 100;
+      const amountInCents = parseInt(amount) * 100; // Convert to cents
 
       const { data } = await axios.post(
         "https://backend-qyb4mybn.b4a.run/payments/create-checkout-session",

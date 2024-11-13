@@ -5,6 +5,7 @@ export const orderSlice = createSlice({
   initialState: {
     currentOrder: null, // For storing the current order details
     completedOrder: null, // For storing completed order details
+    pendingOrders: [], // Track all pending orders if needed
   },
   reducers: {
     setCurrentOrder: (state, action) => {
@@ -13,8 +14,21 @@ export const orderSlice = createSlice({
     setCompletedOrder: (state, action) => {
       state.completedOrder = action.payload;
     },
+    addPendingOrder: (state, action) => {
+      state.pendingOrders.push(action.payload);
+    },
+    removePendingOrder: (state, action) => {
+      state.pendingOrders = state.pendingOrders.filter(
+        (order) => order._id !== action.payload._id
+      );
+    },
   },
 });
 
-export const { setCurrentOrder, setCompletedOrder } = orderSlice.actions;
+export const {
+  setCurrentOrder,
+  setCompletedOrder,
+  addPendingOrder,
+  removePendingOrder,
+} = orderSlice.actions;
 export default orderSlice.reducer;

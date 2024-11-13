@@ -9,12 +9,17 @@ const ActiveOrderCard = ({ order, onOrderComplete }) => {
   const { currentUser } = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const user_id = currentUser._id;
-  const user_type = currentUser.user_type;
+  const user_id = currentUser?._id;
+  const user_type = currentUser?.user_type;
 
   const handleChatClick = () => {
     if (!socket.connected) {
       console.error("Socket not connected");
+      return;
+    }
+
+    if (!user_id || !order?.buyer_id?._id) {
+      console.error("User or order data is missing");
       return;
     }
 
@@ -29,6 +34,7 @@ const ActiveOrderCard = ({ order, onOrderComplete }) => {
       socket.emit("joinRoom", chatId);
       navigate(`/message/id?query=${encodeURIComponent(chatId)}`);
     });
+
     socket.once("chatCreated", (newChat) => {
       const chatId = newChat._id;
       socket.emit("joinRoom", chatId);
@@ -48,9 +54,8 @@ const ActiveOrderCard = ({ order, onOrderComplete }) => {
 
         // Store completed order in Redux and navigate to /payment if user is buyer
         dispatch(setCompletedOrder(order));
-        if (user_type === "buyer") {
-          navigate("/payment");
-        }
+
+        navigate("/payment");
       }
     } catch (error) {
       console.error("Failed to mark order as complete", error);
