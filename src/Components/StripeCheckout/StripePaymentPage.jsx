@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { loadStripe } from "@stripe/stripe-js";
 import axios from "axios";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -15,9 +15,34 @@ const StripePaymentPage = () => {
 
   // Retrieve current user and order details from Redux store
   const { currentUser } = useSelector((state) => state.user);
-  const { currentOrder } = useSelector((state) => state.order);
+  const { completedOrder } = useSelector((state) => state.order);
   const buyer_id = currentUser?._id;
-  const orderId = currentOrder?._id;
+  const orderId = completedOrder?._id;
+
+  // Use dispatch to dispatch actions to Redux store
+  const dispatch = useDispatch();
+
+  // This effect will trigger when the completed order changes
+  useEffect(() => {
+    // Check if the order exists before making API calls
+    if (completedOrder) {
+      // Save completed order to DB (send to backend) after it is completed
+      axios
+        .post("https://your-backend-url.com/api/orders/complete", {
+          order_id: completedOrder._id,
+          buyer_id: completedOrder.buyer_id,
+          service_provider_id: completedOrder.service_provider_id,
+          status: "completed",
+          price: completedOrder.price,
+        })
+        .then((response) => {
+          console.log("Order stored successfully:", response.data);
+        })
+        .catch((error) => {
+          console.error("Error storing completed order:", error);
+        });
+    }
+  }, [completedOrder]);
 
   const handleCheckout = async () => {
     // Input validation for the amount

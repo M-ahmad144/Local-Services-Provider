@@ -74,23 +74,23 @@ const ActiveOrderCard = ({ order, onOrderComplete, onUpdate }) => {
   return (
     <div className="bg-white shadow-md hover:shadow-lg p-6 rounded-lg transition-shadow">
       {/* Client's Name */}
-      <h3 className="font-bold text-lg">
+      <h3 className="mb-2 font-bold text-lg">
         {order?.accepted_by === "buyer"
           ? "Service Provider: " + order?.service_provider_id?.name
           : "Client: " + order?.buyer_id?.name}
       </h3>
 
       {/* Service Provided */}
-      <p className="text-gray-600">Service: {order?.description}</p>
+      <p className="mb-2 text-gray-600">Service: {order?.description}</p>
 
-      {/* Time */}
-      <p className="text-gray-600">
+      {/* Time and Date */}
+      <p className="mb-2 text-gray-600">
         Time:{" "}
         {order?.accepted_by === "buyer"
           ? order?.service_provider_time
           : order?.appointment_time}
       </p>
-      <p className="text-gray-600">
+      <p className="mb-4 text-gray-600">
         Date:{" "}
         {order?.accepted_by === "buyer"
           ? new Date(order?.service_provider_date).toLocaleDateString("en-GB")
@@ -98,7 +98,7 @@ const ActiveOrderCard = ({ order, onOrderComplete, onUpdate }) => {
       </p>
 
       {/* Price */}
-      <p className="font-bold text-green-500 text-xl">
+      <p className="mb-4 font-bold text-green-500 text-xl">
         Price:{" "}
         {order?.accepted_by === "buyer" && order?.service_provider_price !== 0
           ? order?.service_provider_price
@@ -113,7 +113,7 @@ const ActiveOrderCard = ({ order, onOrderComplete, onUpdate }) => {
             <button
               onClick={handleBuyerOrderComplete} // Handle order complete action for the buyer
               disabled={loadingState.buyerComplete} // Disable button when loading
-              className="inline-flex flex-1 justify-center items-center bg-green-500 px-4 py-2 rounded-lg text-white"
+              className="inline-flex justify-center items-center bg-green-500 mb-2 px-4 py-2 rounded-lg w-full text-white"
             >
               {loadingState.buyerComplete ? (
                 <FontAwesomeIcon icon={faSpinner} spin className="w-5 h-5" />
@@ -125,7 +125,7 @@ const ActiveOrderCard = ({ order, onOrderComplete, onUpdate }) => {
             <button
               onClick={handleBuyerOrderDispute} // Handle the buyer dispute action
               disabled={loadingState.buyerReport} // Disable button when loading
-              className="inline-flex flex-1 justify-center items-center bg-red-500 mt-2 px-4 py-2 rounded-lg text-white"
+              className="inline-flex justify-center items-center bg-red-500 px-4 py-2 rounded-lg w-full text-white"
             >
               {loadingState.buyerReport ? (
                 <FontAwesomeIcon icon={faSpinner} spin className="w-5 h-5" />
@@ -143,7 +143,7 @@ const ActiveOrderCard = ({ order, onOrderComplete, onUpdate }) => {
             disabled={loadingState.complete} // Disable button when loading
             className={`w-full inline-block px-4 py-2 ${
               loadingState.complete ? "bg-green-400" : "bg-green-500"
-            } text-white rounded-lg text-center mt-1`}
+            } text-white rounded-lg text-center mt-4`}
           >
             {loadingState.complete ? (
               <FontAwesomeIcon
