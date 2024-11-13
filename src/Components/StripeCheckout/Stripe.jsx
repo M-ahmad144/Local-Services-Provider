@@ -37,17 +37,19 @@ const StripePaymentPage = () => {
       const stripe = await stripePromise;
       const amountInCents = parseInt(amount) * 100; // Convert to cents
 
+      // Send the payment request with amount, order_id, and buyer_id
       const { data } = await axios.post(
         "https://backend-qyb4mybn.b4a.run/payments/create-checkout-session",
         {
           amount: amountInCents,
           order_id: orderId,
-          buyer_id,
+          buyer_id: buyer_id,
         }
       );
 
+      // Redirect user to Stripe Checkout page
       const { error } = await stripe.redirectToCheckout({
-        sessionId: data.id,
+        sessionId: data.id, // session ID from backend
       });
 
       if (error) {
