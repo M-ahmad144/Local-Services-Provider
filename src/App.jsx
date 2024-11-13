@@ -27,7 +27,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import OTP from "./Components/OTP/index";
 import PrivateRoutes from "./Pages/PrivateRoutes";
 import BuyerDashboard from "./Components/Buyer Dashboard/BuyerDashboard";
-import Stripe from "./Components/StripeCheckout/Stripe";
+import StripePaymentPage from "./Components/StripeCheckout/Stripe";
 import SuccessPage from "./Components/StripeCheckout/SuccessPage";
 import CancelPage from "./Components/StripeCheckout/CancelPage";
 
@@ -79,7 +79,7 @@ function App() {
             <Route path="/editprofile" element={<EditProfile />} />
             <Route path="/manage-services" element={<ManageServices />} />
             <Route path="/edit-service" element={<EditService />} />
-            <Route path="/payment" element={<Stripe />} />
+            <Route path="/payment" element={<StripePaymentPage />} />
             <Route path="/success" element={<SuccessPage />} />
             <Route path="/cancel" element={<CancelPage />} />
           </Route>

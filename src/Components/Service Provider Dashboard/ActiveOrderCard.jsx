@@ -1,14 +1,21 @@
-import React from "react";
+import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import socket from "../sockets/socket";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSpinner } from "@fortawesome/free-solid-svg-icons";
 
-const ActiveOrderCard = ({ order, onOrderComplete }) => {
+const ActiveOrderCard = ({ order, onOrderComplete, onUpdate }) => {
   const { currentUser } = useSelector((state) => state.user);
   const navigate = useNavigate();
   const user_id = currentUser._id;
   const user_type = currentUser.user_type;
+  const [completeLoader, setCompleteLoader] = useState(false);
+  const [buyerCompleteLoader, setbuyerCompleteLoader] = useState(false);
+  const [buyerReportLoader, setbuyerReportLoader] = useState(false);
+
+  console.log(order);
   const handleChatClick = () => {
     if (!socket.connected) {
       console.error("Socket not connected");
@@ -35,6 +42,7 @@ const ActiveOrderCard = ({ order, onOrderComplete }) => {
   };
 
   const handleOrderComplete = async () => {
+    setCompleteLoader(true);
     try {
       const response = await axios.patch(
         "https://backend-qyb4mybn.b4a.run/order/complete_by_freelancer",
@@ -43,10 +51,59 @@ const ActiveOrderCard = ({ order, onOrderComplete }) => {
         }
       );
 
-      if (response.data.success) {
-        onOrderComplete(order._id); // Callback to update the parent component's state
+      console.log(response);
+
+      if (response.data) {
+        console.log("yes");
+        onUpdate();
       }
+      setCompleteLoader(false);
     } catch (error) {
+      setCompleteLoader(false);
+      console.error("Failed to mark order as complete", error);
+      alert("Could not mark the order as complete. Please try again.");
+    }
+  };
+
+  const handleBuyerOrderComplete = async () => {
+    setbuyerCompleteLoader(true);
+    try {
+      const response = await axios.patch(
+        "https://backend-qyb4mybn.b4a.run/order/confirm_completion",
+        {
+          order_id: order._id,
+          action: "confirm",
+        }
+      );
+      if (response.data) {
+        console.log("yes");
+        onUpdate();
+      }
+      setbuyerCompleteLoader(false);
+    } catch (error) {
+      setbuyerCompleteLoader(false);
+      console.error("Failed to mark order as complete", error);
+      alert("Could not mark the order as complete. Please try again.");
+    }
+  };
+
+  const handleBuyerOrderDispute = async () => {
+    setbuyerReportLoader(true);
+    try {
+      const response = await axios.patch(
+        "https://backend-qyb4mybn.b4a.run/order/confirm_completion",
+        {
+          order_id: order._id,
+          action: "dispute",
+        }
+      );
+      if (response.data) {
+        console.log("yes");
+        onUpdate();
+      }
+      setbuyerReportLoader(false);
+    } catch (error) {
+      setbuyerReportLoader(false);
       console.error("Failed to mark order as complete", error);
       alert("Could not mark the order as complete. Please try again.");
     }
@@ -95,12 +152,67 @@ const ActiveOrderCard = ({ order, onOrderComplete }) => {
         >
           Chat with Client
         </button>
-        <button
-          onClick={handleOrderComplete}
-          className="inline-block bg-green-500 px-4 py-2 rounded-lg w-full text-center text-white"
-        >
-          Mark as Complete
-        </button>
+
+        {user_type === "buyer" &&
+        order.order_status === "pending confirmation" ? (
+          <div className="flex flex-col space-y-2 mt-2">
+            <p className="font-medium text-gray-700">
+              Your service provider has marked this order as{" "}
+              <span className="font-semibold text-green-600">completed</span>.
+              Please confirm or report any issues.
+            </p>
+
+            <div className="flex space-x-2">
+              <button
+                onClick={handleBuyerOrderComplete}
+                disabled={buyerCompleteLoader}
+                className="inline-flex flex-1 justify-center items-center bg-green-500 px-4 py-2 rounded-lg text-white"
+              >
+                {buyerCompleteLoader ? (
+                  <FontAwesomeIcon icon={faSpinner} spin className="w-5 h-5" />
+                ) : (
+                  "Mark as Complete"
+                )}
+              </button>
+
+              <button
+                onClick={handleBuyerOrderDispute}
+                disabled={buyerCompleteLoader}
+                className="inline-flex flex-1 justify-center items-center bg-red-500 px-4 py-2 rounded-lg text-white"
+              >
+                {buyerReportLoader ? (
+                  <FontAwesomeIcon icon={faSpinner} spin className="w-5 h-5" />
+                ) : (
+                  "Report"
+                )}
+              </button>
+            </div>
+          </div>
+        ) : user_type == "buyer" &&
+          order.order_status !== "pending confirmation" ? (
+          <p className="mt-1 text-gray-500">Waiting for response</p>
+        ) : user_type !== "buyer" &&
+          order.order_status === "pending confirmation" ? (
+          <p className="mt-1 text-gray-500">Waiting for response</p>
+        ) : (
+          <button
+            onClick={handleOrderComplete}
+            disabled={completeLoader}
+            className={`w-full inline-block px-4 py-2 ${
+              completeLoader ? "bg-green-400" : "bg-green-500"
+            } text-white rounded-lg text-center mt-1`}
+          >
+            {completeLoader ? (
+              <FontAwesomeIcon
+                icon={faSpinner}
+                spin
+                className="mx-auto w-5 h-5"
+              />
+            ) : (
+              "Mark as Complete"
+            )}
+          </button>
+        )}
       </div>
     </div>
   );
