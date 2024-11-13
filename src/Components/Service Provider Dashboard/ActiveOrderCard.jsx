@@ -108,54 +108,56 @@ const ActiveOrderCard = ({ order, onOrderComplete, onUpdate }) => {
       {/* Action Buttons */}
       <div className="mt-4">
         {/* Buttons for the buyer to confirm completion or dispute */}
-        {order?.order_status === "pending confirmation" && (
-          <>
+        {order?.order_status === "pending confirmation" &&
+          user_type === "buyer" && (
+            <>
+              <button
+                onClick={handleBuyerOrderComplete} // Handle order complete action for the buyer
+                disabled={loadingState.buyerComplete} // Disable button when loading
+                className="inline-flex justify-center items-center bg-green-500 mb-2 px-4 py-2 rounded-lg w-full text-white"
+              >
+                {loadingState.buyerComplete ? (
+                  <FontAwesomeIcon icon={faSpinner} spin className="w-5 h-5" />
+                ) : (
+                  "Mark as Complete"
+                )}
+              </button>
+
+              <button
+                onClick={handleBuyerOrderDispute} // Handle the buyer dispute action
+                disabled={loadingState.buyerReport} // Disable button when loading
+                className="inline-flex justify-center items-center bg-red-500 px-4 py-2 rounded-lg w-full text-white"
+              >
+                {loadingState.buyerReport ? (
+                  <FontAwesomeIcon icon={faSpinner} spin className="w-5 h-5" />
+                ) : (
+                  "Report"
+                )}
+              </button>
+            </>
+          )}
+
+        {/* Button for the service provider to complete the order */}
+        {order?.order_status !== "pending confirmation" &&
+          user_type === "service_provider" && (
             <button
-              onClick={handleBuyerOrderComplete} // Handle order complete action for the buyer
-              disabled={loadingState.buyerComplete} // Disable button when loading
-              className="inline-flex justify-center items-center bg-green-500 mb-2 px-4 py-2 rounded-lg w-full text-white"
+              onClick={handleOrderComplete} // Service provider marks the order as complete
+              disabled={loadingState.complete} // Disable button when loading
+              className={`w-full inline-block px-4 py-2 ${
+                loadingState.complete ? "bg-green-400" : "bg-green-500"
+              } text-white rounded-lg text-center mt-4`}
             >
-              {loadingState.buyerComplete ? (
-                <FontAwesomeIcon icon={faSpinner} spin className="w-5 h-5" />
+              {loadingState.complete ? (
+                <FontAwesomeIcon
+                  icon={faSpinner}
+                  spin
+                  className="mx-auto w-5 h-5"
+                />
               ) : (
                 "Mark as Complete"
               )}
             </button>
-
-            <button
-              onClick={handleBuyerOrderDispute} // Handle the buyer dispute action
-              disabled={loadingState.buyerReport} // Disable button when loading
-              className="inline-flex justify-center items-center bg-red-500 px-4 py-2 rounded-lg w-full text-white"
-            >
-              {loadingState.buyerReport ? (
-                <FontAwesomeIcon icon={faSpinner} spin className="w-5 h-5" />
-              ) : (
-                "Report"
-              )}
-            </button>
-          </>
-        )}
-
-        {/* Button for the service provider to complete the order */}
-        {order?.order_status !== "pending confirmation" && (
-          <button
-            onClick={handleOrderComplete} // Service provider marks the order as complete
-            disabled={loadingState.complete} // Disable button when loading
-            className={`w-full inline-block px-4 py-2 ${
-              loadingState.complete ? "bg-green-400" : "bg-green-500"
-            } text-white rounded-lg text-center mt-4`}
-          >
-            {loadingState.complete ? (
-              <FontAwesomeIcon
-                icon={faSpinner}
-                spin
-                className="mx-auto w-5 h-5"
-              />
-            ) : (
-              "Mark as Complete"
-            )}
-          </button>
-        )}
+          )}
       </div>
     </div>
   );
