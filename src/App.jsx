@@ -79,7 +79,7 @@ function App() {
             <Route path="/editprofile" element={<EditProfile />} />
             <Route path="/manage-services" element={<ManageServices />} />
             <Route path="/edit-service" element={<EditService />} />
-            <Route path="/stripe-checkout" element={<Stripe />} />
+            <Route path="/payment" element={<Stripe />} />
             <Route path="/success" element={<SuccessPage />} />
             <Route path="/cancel" element={<CancelPage />} />
           </Route>

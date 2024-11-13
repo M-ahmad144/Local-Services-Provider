@@ -1,17 +1,23 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { loadStripe } from "@stripe/stripe-js";
 import axios from "axios";
+import { useSelector } from "react-redux";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-// Initialize Stripe with your public key
 const stripePromise = loadStripe(
   "pk_test_51QJEhZRs4hqDZ7PFRqSx4rS5oo3KuOulU1GfFP3f0jmLkMn1PzxCfYs7V3MfHng6zHkFgP8WIBbjD2LEqP18ECcZ00cIDA6jow"
 );
 
 const StripePaymentPage = () => {
   const [amount, setAmount] = useState("");
-  const [loading, setLoading] = useState(false); // Loading state to track progress
+  const [loading, setLoading] = useState(false);
+
+  // Retrieve current user and order details from Redux store
+  const { currentUser } = useSelector((state) => state.user);
+  const { currentOrder } = useSelector((state) => state.order);
+  const buyer_id = currentUser?._id;
+  const orderId = currentOrder?._id;
 
   const handleCheckout = async () => {
     if (!amount || isNaN(amount) || amount <= 0) {
@@ -19,47 +25,50 @@ const StripePaymentPage = () => {
       return;
     }
 
-    setLoading(true); // Set loading to true when starting the payment process
+    if (!orderId) {
+      toast.error("Order is not available.");
+      return;
+    }
+
+    setLoading(true);
 
     try {
       const stripe = await stripePromise;
-
-      // Convert dollars to cents
       const amountInCents = parseInt(amount) * 100;
 
-      // Send amount to backend to create a checkout session
       const { data } = await axios.post(
-        "http://localhost:8080/create-checkout-session",
+        "https://backend-qyb4mybn.b4a.run/payments/create-checkout-session",
         {
           amount: amountInCents,
+          order_id: orderId,
+          buyer_id,
         }
       );
 
-      // Redirect to Stripe Checkout
       const { error } = await stripe.redirectToCheckout({
         sessionId: data.id,
       });
 
       if (error) {
+        toast.error("There was an issue redirecting to the payment page.");
         console.error("Stripe Checkout error:", error.message);
       }
     } catch (error) {
-      console.error("Error initiating checkout:", error);
       toast.error(
         "There was an issue creating the payment session. Please try again."
       );
+      console.error("Error initiating checkout:", error);
     } finally {
-      setLoading(false); // Reset loading state after the process is complete
+      setLoading(false);
     }
   };
 
   return (
     <div className="flex justify-center items-center bg-gray-100 p-10 min-h-screen">
       <div className="bg-white shadow-lg p-8 rounded-xl w-full max-w-lg">
-        {/* Logo and Title */}
         <div className="mb-6 text-center">
           <img
-            src="https://your-logo-url.com/logo.png" // Replace with your logo image URL
+            src="https://your-logo-url.com/logo.png"
             alt="Logo"
             className="mx-auto mb-4 w-20 h-20"
           />
@@ -69,7 +78,6 @@ const StripePaymentPage = () => {
           </p>
         </div>
 
-        {/* Amount Input */}
         <div className="mb-6">
           <label
             htmlFor="amount"
@@ -87,13 +95,12 @@ const StripePaymentPage = () => {
           />
         </div>
 
-        {/* Payment Button */}
         <button
           onClick={handleCheckout}
           className={`bg-indigo-600 hover:bg-indigo-700 py-3 rounded-lg w-full font-semibold text-white text-xl transform transition duration-200 ease-in-out hover:scale-105 focus:outline-none ${
             loading ? "cursor-wait opacity-50" : ""
           }`}
-          disabled={loading} // Disable button during loading
+          disabled={loading}
         >
           {loading ? (
             <div className="flex justify-center items-center">
@@ -120,7 +127,6 @@ const StripePaymentPage = () => {
           )}
         </button>
 
-        {/* Information and Footer */}
         <div className="mt-4 text-center">
           <p className="text-gray-500 text-sm">
             Your payment is processed securely through Stripe.
@@ -128,7 +134,6 @@ const StripePaymentPage = () => {
         </div>
       </div>
 
-      {/* Toastify container for notifications */}
       <ToastContainer
         position="top-center"
         autoClose={5000}
