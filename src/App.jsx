@@ -27,7 +27,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import OTP from "./Components/OTP/index";
 import PrivateRoutes from "./Pages/PrivateRoutes";
 import BuyerDashboard from "./Components/Buyer Dashboard/BuyerDashboard";
-import StripePaymentPage from "./Components/StripeCheckout/StripePaymentPage";
+import StripePaymentPage from "./Components/StripeCheckout/Stripe";
 import SuccessPage from "./Components/StripeCheckout/SuccessPage";
 import CancelPage from "./Components/StripeCheckout/CancelPage";
 

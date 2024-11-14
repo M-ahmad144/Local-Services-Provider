@@ -11,8 +11,8 @@ const ActiveOrderCard = ({ order, onOrderComplete, onUpdate }) => {
   const { currentUser } = useSelector((state) => state.user);
   const dispatch = useDispatch(); // Dispatch to Redux
   const navigate = useNavigate();
-  const user_id = currentUser._id;
-  const user_type = currentUser.user_type;
+  const user_id = currentUser?._id; // Add optional chaining for currentUser
+  const user_type = currentUser?.user_type; // Add optional chaining for user_type
   const [completeLoader, setCompleteLoader] = useState(false);
   const [buyerCompleteLoader, setbuyerCompleteLoader] = useState(false);
   const [buyerReportLoader, setbuyerReportLoader] = useState(false);
@@ -25,19 +25,24 @@ const ActiveOrderCard = ({ order, onOrderComplete, onUpdate }) => {
       return;
     }
 
-    // Trigger the createChat event when the user clicks Contact
-    socket.emit("createChat", {
-      senderId: user_id,
-      receiverId: order.buyer_id._id,
-    });
+    // Check if order and buyer_id exist before proceeding
+    if (order && order.buyer_id && order.buyer_id._id) {
+      socket.emit("createChat", {
+        senderId: user_id,
+        receiverId: order.buyer_id._id,
+      });
+    } else {
+      console.error("Order or buyer_id is undefined");
+      return;
+    }
+
     // Listen for either the existing or newly created chat
     socket.on("chatExists", (chat) => {
       const chatId = chat._id; // Extract chat ID
       socket.emit("joinRoom", chat._id);
-      navigate(`/message/id?query=${encodeURIComponent(chatId)}`); // Navigate to the messageSection with chat ID
+      navigate(`/message/id?query=${encodeURIComponent(chatId)}`); // Navigate to the message section with chat ID
     });
     socket.on("chatCreated", (newChat) => {
-      console.log(newChat);
       const chatId = newChat._id; // Extract chat ID
       socket.emit("joinRoom", newChat._id);
       navigate(`/message/id?query=${encodeURIComponent(chatId)}`);
@@ -54,17 +59,9 @@ const ActiveOrderCard = ({ order, onOrderComplete, onUpdate }) => {
         }
       );
 
-      console.log(response);
-
       if (response.data) {
-        console.log("yes");
-
-        // Dispatch the completed order to Redux
         dispatch(setCompletedOrder(order)); // Store the completed order in Redux
-
-        // Call the parent function to update the order state
-        onUpdate();
-
+        onUpdate(); // Call the parent function to update the order state
         setCompleteLoader(false);
       }
     } catch (error) {
@@ -85,16 +82,10 @@ const ActiveOrderCard = ({ order, onOrderComplete, onUpdate }) => {
         }
       );
       if (response.data) {
-        console.log("yes");
-
-        // Dispatch the completed order to Redux for the buyer
         dispatch(setCompletedOrder(order)); // Store the completed order in Redux
-
-        // Navigate to payment page after confirming completion for the buyer
         if (user_type === "buyer") {
           navigate("/payment"); // Navigate to payment page
         }
-
         onUpdate();
       }
       setbuyerCompleteLoader(false);
@@ -116,40 +107,44 @@ const ActiveOrderCard = ({ order, onOrderComplete, onUpdate }) => {
         }
       );
       if (response.data) {
-        console.log("yes");
         onUpdate();
       }
       setbuyerReportLoader(false);
     } catch (error) {
       setbuyerReportLoader(false);
-      console.error("Failed to mark order as complete", error);
-      alert("Could not mark the order as complete. Please try again.");
+      console.error("Failed to report issue", error);
+      alert("Could not report the issue. Please try again.");
     }
   };
+
+  if (!order || !order.buyer_id) {
+    // Fallback UI if order or buyer_id is not available
+    return <div>Loading order details...</div>;
+  }
 
   return (
     <div className="bg-white shadow-md hover:shadow-lg p-6 rounded-lg transition-shadow">
       {/* Client's Name */}
       <h3 className="font-bold text-lg">
-        {user_type == "buyer" ? "Service Provider: " : "Client: "}{" "}
-        {user_type == "buyer"
-          ? order.service_provider_id.name
-          : order.buyer_id.name}
+        {user_type === "buyer" ? "Service Provider: " : "Client: "}
+        {user_type === "buyer"
+          ? order.service_provider_id?.name
+          : order.buyer_id?.name}
       </h3>
 
       {/* Service Provided */}
       <p className="text-gray-600">Service: {order.description}</p>
 
-      {/* Time */}
+      {/* Time and Date */}
       <p className="text-gray-600">
         Time:{" "}
-        {order.accepted_by == "buyer"
+        {order.accepted_by === "buyer"
           ? order.service_provider_time
           : order.appointment_time}
       </p>
       <p className="text-gray-600">
         Date:{" "}
-        {order.accepted_by == "buyer"
+        {order.accepted_by === "buyer"
           ? new Date(order.service_provider_date).toLocaleDateString("en-GB")
           : new Date(order.appointment_date).toLocaleDateString("en-GB")}
       </p>
@@ -157,7 +152,7 @@ const ActiveOrderCard = ({ order, onOrderComplete, onUpdate }) => {
       {/* Price */}
       <p className="font-bold text-green-500 text-xl">
         Price:{" "}
-        {order.accepted_by == "buyer" && order.service_provider_price != 0
+        {order.accepted_by === "buyer" && order.service_provider_price !== 0
           ? order.service_provider_price
           : order.price}
       </p>
@@ -179,7 +174,6 @@ const ActiveOrderCard = ({ order, onOrderComplete, onUpdate }) => {
               <span className="font-semibold text-green-600">completed</span>.
               Please confirm or report any issues.
             </p>
-
             <div className="flex space-x-2">
               <button
                 onClick={handleBuyerOrderComplete}
@@ -192,10 +186,9 @@ const ActiveOrderCard = ({ order, onOrderComplete, onUpdate }) => {
                   "Mark as Complete"
                 )}
               </button>
-
               <button
                 onClick={handleBuyerOrderDispute}
-                disabled={buyerCompleteLoader}
+                disabled={buyerReportLoader}
                 className="inline-flex flex-1 justify-center items-center bg-red-500 px-4 py-2 rounded-lg text-white"
               >
                 {buyerReportLoader ? (
@@ -206,12 +199,6 @@ const ActiveOrderCard = ({ order, onOrderComplete, onUpdate }) => {
               </button>
             </div>
           </div>
-        ) : user_type == "buyer" &&
-          order.order_status !== "pending confirmation" ? (
-          <p className="mt-1 text-gray-500">Waiting for response</p>
-        ) : user_type !== "buyer" &&
-          order.order_status === "pending confirmation" ? (
-          <p className="mt-1 text-gray-500">Waiting for response</p>
         ) : (
           <button
             onClick={handleOrderComplete}
