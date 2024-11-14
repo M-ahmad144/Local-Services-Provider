@@ -16,17 +16,18 @@ const SuccessPage = () => {
   const { completedOrder } = useSelector((state) => state.order);
   const buyer_id = currentUser?._id;
   const order_id = completedOrder?._id;
+  const amount = completedOrder?.totalAmount; // Assuming you have totalAmount in the order
 
   useEffect(() => {
     const storeTransactionData = async () => {
       try {
-        if (sessionId && order_id && buyer_id) {
+        if (sessionId && order_id && buyer_id && amount) {
           // Send data to the backend to store the transaction
           await axios.post("https://backend-qyb4mybn.b4a.run/payment/success", {
             sessionId, // Send sessionId (can be useful for future reference)
             order_id,
             buyer_id,
-            amount: completedOrder?.totalAmount, // Pass the amount if available
+            amount, // Pass the amount if available
           });
 
           setPaymentStatus(
@@ -47,7 +48,7 @@ const SuccessPage = () => {
     };
 
     storeTransactionData();
-  }, [sessionId, order_id, buyer_id, completedOrder]);
+  }, [sessionId, order_id, buyer_id, amount]);
 
   return (
     <div className="flex flex-col justify-center items-center bg-gradient-to-br from-indigo-600 to-indigo-400 p-6 min-h-screen">
