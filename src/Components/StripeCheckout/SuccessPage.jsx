@@ -18,51 +18,28 @@ const SuccessPage = () => {
   const buyer_id = currentUser?._id;
   const order_id = completedOrder?._id;
   const amount = completedOrder?.price; // Assuming you have totalAmount in the order
-
   useEffect(() => {
     const storeTransactionData = async () => {
       try {
-        // Debugging: Log the data to ensure it is correct
-        console.log("Session ID:", sessionId);
-        console.log("Order ID:", order_id);
-        console.log("Buyer ID:", buyer_id);
-        console.log("Amount:", amount);
-
-        // Ensure that sessionId, order_id, buyer_id, and amount are valid
+        // Ensure valid data
         if (!sessionId || !order_id || !buyer_id || !amount) {
-          console.log("Missing data, invalid session");
           setPaymentStatus("Invalid session data. Please try again.");
           toast.error("Invalid session data. Please try again.");
           return;
         }
 
-        // Step 1: Verify payment using sessionId by querying Stripe API
-        const stripeResponse = await axios.get(
-          `https://backend-qyb4mybn.b4a.run/payment/verify-session/${sessionId}`
+        // Directly store transaction data without payment verification
+        await axios.post("https://backend-qyb4mybn.b4a.run/payment/success", {
+          sessionId,
+          order_id,
+          buyer_id,
+          amount,
+        });
+
+        setPaymentStatus(
+          "Payment was successful! Thank you for your purchase."
         );
-
-        // Debugging: Log the response from the Stripe API
-        console.log("Stripe response:", stripeResponse);
-
-        // Check if the payment is successful
-        if (stripeResponse.data.paymentStatus === "success") {
-          // Step 2: If payment is successful, store transaction details
-          await axios.post("https://backend-qyb4mybn.b4a.run/payment/success", {
-            sessionId,
-            order_id,
-            buyer_id,
-            amount,
-          });
-
-          setPaymentStatus(
-            "Payment was successful! Thank you for your purchase."
-          );
-        } else {
-          setPaymentStatus("Payment failed. Please try again.");
-        }
       } catch (error) {
-        // Log the error for debugging
-        console.error("Error confirming payment:", error);
         setPaymentStatus(
           "There was an issue with your payment. Please contact support."
         );
