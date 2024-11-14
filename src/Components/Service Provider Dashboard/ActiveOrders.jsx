@@ -7,7 +7,7 @@ const ActiveOrders = ({ in_progressOrders, onUpdate }) => {
   console.log("In progress", activeOrders);
 
   const handleOrderComplete = (orderId) => {
-    console.log(activeOrders);
+    alert("order completed");
   };
   return (
     <>
