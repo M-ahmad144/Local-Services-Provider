@@ -22,9 +22,17 @@ const SuccessPage = () => {
   useEffect(() => {
     const storeTransactionData = async () => {
       try {
-        // Check if all required data is available
+        // Debugging: Log the data to ensure it is correct
+        console.log("Session ID:", sessionId);
+        console.log("Order ID:", order_id);
+        console.log("Buyer ID:", buyer_id);
+        console.log("Amount:", amount);
+
+        // Ensure that sessionId, order_id, buyer_id, and amount are valid
         if (!sessionId || !order_id || !buyer_id || !amount) {
+          console.log("Missing data, invalid session");
           setPaymentStatus("Invalid session data. Please try again.");
+          toast.error("Invalid session data. Please try again.");
           return;
         }
 
@@ -33,6 +41,10 @@ const SuccessPage = () => {
           `https://backend-qyb4mybn.b4a.run/payment/verify-session/${sessionId}`
         );
 
+        // Debugging: Log the response from the Stripe API
+        console.log("Stripe response:", stripeResponse);
+
+        // Check if the payment is successful
         if (stripeResponse.data.paymentStatus === "success") {
           // Step 2: If payment is successful, store transaction details
           await axios.post("https://backend-qyb4mybn.b4a.run/payment/success", {
@@ -49,11 +61,12 @@ const SuccessPage = () => {
           setPaymentStatus("Payment failed. Please try again.");
         }
       } catch (error) {
+        // Log the error for debugging
+        console.error("Error confirming payment:", error);
         setPaymentStatus(
           "There was an issue with your payment. Please contact support."
         );
         toast.error("Payment confirmation failed. Please try again.");
-        console.error("Error confirming payment:", error);
       } finally {
         setLoading(false);
       }
