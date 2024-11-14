@@ -4,6 +4,7 @@ import { useLocation } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { FaCheckCircle, FaTimesCircle, FaSpinner } from "react-icons/fa";
+import { useSelector, useDispatch } from "react-redux";
 
 const SuccessPage = () => {
   const [paymentStatus, setPaymentStatus] = useState("");
@@ -11,18 +12,26 @@ const SuccessPage = () => {
   const location = useLocation();
   const sessionId = new URLSearchParams(location.search).get("session_id");
 
+  const dispatch = useDispatch();
+  const { currentUser } = useSelector((state) => state.user);
+  const { completedOrder } = useSelector((state) => state.order);
+  const buyer_id = currentUser?._id;
+  const orderId = completedOrder?._id;
+
   useEffect(() => {
     const confirmPayment = async () => {
       try {
-        if (sessionId) {
+        if (sessionId && orderId && buyer_id) {
           await axios.post("https://backend-qyb4mybn.b4a.run/payment/success", {
             sessionId,
+            order_id: orderId,
+            buyer_id,
           });
           setPaymentStatus(
             "Payment was successful! Thank you for your purchase."
           );
         } else {
-          setPaymentStatus("Invalid session ID. Please try again.");
+          setPaymentStatus("Invalid session data. Please try again.");
         }
       } catch (error) {
         setPaymentStatus(
@@ -36,7 +45,7 @@ const SuccessPage = () => {
     };
 
     confirmPayment();
-  }, [sessionId]);
+  }, [sessionId, orderId, buyer_id]);
 
   return (
     <div className="flex flex-col justify-center items-center bg-gradient-to-br from-indigo-600 to-indigo-400 p-6 min-h-screen">
