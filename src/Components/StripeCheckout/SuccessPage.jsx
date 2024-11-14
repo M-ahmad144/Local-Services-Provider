@@ -17,7 +17,7 @@ const SuccessPage = () => {
 
   const buyer_id = currentUser?._id;
   const order_id = completedOrder?._id;
-  const amount = completedOrder?.totalAmount; // Assuming you have totalAmount in the order
+  const amount = completedOrder?.price; // Assuming you have totalAmount in the order
 
   useEffect(() => {
     const storeTransactionData = async () => {
