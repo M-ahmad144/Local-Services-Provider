@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { setCompletedOrder } from "../../Redux/orderSlice"; // Import the Redux action
 import socket from "../sockets/socket";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -8,6 +9,7 @@ import { faSpinner } from "@fortawesome/free-solid-svg-icons";
 
 const ActiveOrderCard = ({ order, onOrderComplete, onUpdate }) => {
   const { currentUser } = useSelector((state) => state.user);
+  const dispatch = useDispatch(); // Dispatch to Redux
   const navigate = useNavigate();
   const user_id = currentUser._id;
   const user_type = currentUser.user_type;
@@ -16,6 +18,7 @@ const ActiveOrderCard = ({ order, onOrderComplete, onUpdate }) => {
   const [buyerReportLoader, setbuyerReportLoader] = useState(false);
 
   console.log(order);
+
   const handleChatClick = () => {
     if (!socket.connected) {
       console.error("Socket not connected");
@@ -55,9 +58,15 @@ const ActiveOrderCard = ({ order, onOrderComplete, onUpdate }) => {
 
       if (response.data) {
         console.log("yes");
+
+        // Dispatch the completed order to Redux
+        dispatch(setCompletedOrder(order)); // Store the completed order in Redux
+
+        // Call the parent function to update the order state
         onUpdate();
+
+        setCompleteLoader(false);
       }
-      setCompleteLoader(false);
     } catch (error) {
       setCompleteLoader(false);
       console.error("Failed to mark order as complete", error);
@@ -77,6 +86,15 @@ const ActiveOrderCard = ({ order, onOrderComplete, onUpdate }) => {
       );
       if (response.data) {
         console.log("yes");
+
+        // Dispatch the completed order to Redux for the buyer
+        dispatch(setCompletedOrder(order)); // Store the completed order in Redux
+
+        // Navigate to payment page after confirming completion for the buyer
+        if (user_type === "buyer") {
+          navigate("/payment"); // Navigate to payment page
+        }
+
         onUpdate();
       }
       setbuyerCompleteLoader(false);
