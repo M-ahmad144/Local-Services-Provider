@@ -30,7 +30,7 @@ const SuccessPage = () => {
 
         // Directly store transaction data without payment verification
         await axios.post(
-          "https://backend-qyb4mybn.b4a.run/payment/confirm-payment",
+          "https://backend-qyb4mybn.b4a.run/payments/confirm-payment",
           {
             sessionId,
             order_id,
