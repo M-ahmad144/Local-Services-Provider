@@ -11,8 +11,8 @@ const SuccessPage = () => {
   const [loading, setLoading] = useState(true);
   const location = useLocation();
   const sessionId = new URLSearchParams(location.search).get("session_id");
+  console.log("sessionId", sessionId);
 
-  const dispatch = useDispatch();
   const { currentUser } = useSelector((state) => state.user);
   const { completedOrder } = useSelector((state) => state.order);
   const buyer_id = currentUser?._id;
