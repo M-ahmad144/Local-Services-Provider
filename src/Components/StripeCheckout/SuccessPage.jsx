@@ -29,12 +29,15 @@ const SuccessPage = () => {
         }
 
         // Directly store transaction data without payment verification
-        await axios.post("https://backend-qyb4mybn.b4a.run/payment/success", {
-          sessionId,
-          order_id,
-          buyer_id,
-          amount,
-        });
+        await axios.post(
+          "https://backend-qyb4mybn.b4a.run/payment/confirm-payment",
+          {
+            sessionId,
+            order_id,
+            buyer_id,
+            amount,
+          }
+        );
 
         setPaymentStatus(
           "Payment was successful! Thank you for your purchase."
