@@ -40,9 +40,9 @@ const ActiveOrderCard = ({ order, onOrderComplete, onUpdate }) => {
 
       if (response.data) {
         if (action === "complete") {
-          dispatch(setCompletedOrder(order));
+          dispatch(setCompletedOrder(order)); // Update Redux store with completed order
 
-          // Navigate to the payment page only if the user type is "buyer"
+          // If the user is a buyer, navigate to the payment page
           if (user_type === "buyer") {
             navigate("/payment");
           }
@@ -60,7 +60,7 @@ const ActiveOrderCard = ({ order, onOrderComplete, onUpdate }) => {
   // Handler to confirm completion of the order (Buyer marks it as complete)
   const handleBuyerOrderComplete = () => handleOrderAction("confirm");
 
-  // Handler to complete the order (Admin/Service provider marks it as complete)
+  // Handler to complete the order (Service provider marks it as complete)
   const handleOrderComplete = () => handleOrderAction("complete");
 
   // Handler for the buyer to dispute the order
@@ -108,7 +108,8 @@ const ActiveOrderCard = ({ order, onOrderComplete, onUpdate }) => {
       {/* Action Buttons */}
       <div className="mt-4">
         {/* Buttons for the buyer to confirm completion or dispute */}
-        {order?.order_status === "pending confirmation" &&
+        {(order?.order_status === "pending confirmation" ||
+          order?.order_status === "in progress") &&
           user_type === "buyer" && (
             <>
               <button
@@ -159,27 +160,20 @@ const ActiveOrderCard = ({ order, onOrderComplete, onUpdate }) => {
                   "Mark as Complete"
                 )}
               </button>
+
+              <button
+                onClick={handleBuyerOrderDispute} // Handle the service provider dispute action
+                disabled={loadingState.buyerReport} // Disable button when loading
+                className="inline-flex justify-center items-center bg-red-500 mt-2 px-4 py-2 rounded-lg w-full text-white"
+              >
+                {loadingState.buyerReport ? (
+                  <FontAwesomeIcon icon={faSpinner} spin className="w-5 h-5" />
+                ) : (
+                  "Report"
+                )}
+              </button>
             </>
           )}
-
-        {/* Buttons for both buyer and service provider to complete the order */}
-        {order?.order_status === "in progress" && user_type === "buyer" && (
-          <button
-            onClick={handleBuyerOrderComplete} // Buyer confirms completion of the service
-            disabled={loadingState.buyerComplete}
-            className="inline-block bg-green-500 mt-4 px-4 py-2 rounded-lg w-full text-center text-white"
-          >
-            {loadingState.buyerComplete ? (
-              <FontAwesomeIcon
-                icon={faSpinner}
-                spin
-                className="mx-auto w-5 h-5"
-              />
-            ) : (
-              "Mark as Complete"
-            )}
-          </button>
-        )}
       </div>
     </div>
   );
