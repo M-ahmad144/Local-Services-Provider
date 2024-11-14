@@ -12,16 +12,22 @@ const ActiveOrderCard = ({ order, onOrderComplete }) => {
   const user_id = currentUser._id;
   const user_type = currentUser.user_type;
 
-  // Handle chat initiation
+  // Handle chat initiation (for buyer or service provider)
   const handleChatClick = () => {
     if (!socket.connected) {
       console.error("Socket not connected");
       return;
     }
 
+    // If the user is a buyer, initiate chat with the service provider
+    const receiverId =
+      user_type === "buyer"
+        ? order.service_provider_id._id
+        : order.buyer_id._id;
+
     socket.emit("createChat", {
       senderId: user_id,
-      receiverId: order.buyer_id._id,
+      receiverId: receiverId,
     });
 
     socket.on("chatExists", (chat) => {
@@ -37,7 +43,7 @@ const ActiveOrderCard = ({ order, onOrderComplete }) => {
     });
   };
 
-  // Handle order completion
+  // Handle order completion (for freelancer or buyer)
   const handleOrderComplete = async () => {
     try {
       const response = await axios.patch(
@@ -104,12 +110,16 @@ const ActiveOrderCard = ({ order, onOrderComplete }) => {
           onClick={handleChatClick}
           className="inline-block bg-custom-violet px-4 py-2 rounded-lg w-full text-center text-white"
         >
-          Chat with Client
+          {/* Dynamically change button text */}
+          {user_type === "buyer"
+            ? "Chat with Service Provider"
+            : "Chat with Client"}
         </button>
         <button
           onClick={handleOrderComplete}
           className="inline-block bg-green-500 px-4 py-2 rounded-lg w-full text-center text-white"
         >
+          {/* Mark order as complete and navigate for buyer */}
           Mark as Complete
         </button>
       </div>
