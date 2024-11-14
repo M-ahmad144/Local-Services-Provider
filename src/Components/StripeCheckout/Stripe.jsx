@@ -11,7 +11,6 @@ const stripePromise = loadStripe(
 );
 
 const StripePaymentPage = () => {
-  const [amount, setAmount] = useState("");
   const [loading, setLoading] = useState(false);
 
   // Retrieve current user and order details from Redux store
@@ -19,6 +18,7 @@ const StripePaymentPage = () => {
   const { completedOrder } = useSelector((state) => state.order);
   const buyer_id = currentUser?._id;
   const orderId = completedOrder?._id;
+  const amount = completedOrder?.price; // Use the amount from the completed order
 
   // Use dispatch to dispatch actions to Redux store
   const dispatch = useDispatch();
@@ -46,9 +46,8 @@ const StripePaymentPage = () => {
   }, [completedOrder]);
 
   const handleCheckout = async () => {
-    // Input validation for the amount
     if (!amount || isNaN(amount) || amount <= 0) {
-      toast.error("Please enter a valid amount greater than 0.");
+      toast.error("Invalid order amount.");
       return;
     }
 
@@ -103,25 +102,8 @@ const StripePaymentPage = () => {
           />
           <h1 className="font-bold text-3xl text-gray-800">Payment</h1>
           <p className="mt-2 text-gray-500">
-            Enter the amount you'd like to pay
+            The amount for payment is {amount} USD
           </p>
-        </div>
-
-        <div className="mb-6">
-          <label
-            htmlFor="amount"
-            className="block mb-2 font-medium text-gray-600 text-sm"
-          >
-            Amount (USD)
-          </label>
-          <input
-            type="number"
-            id="amount"
-            placeholder="Enter amount in USD"
-            value={amount}
-            onChange={(e) => setAmount(e.target.value)}
-            className="border-2 border-gray-300 p-4 rounded-md focus:ring-2 focus:ring-indigo-500 w-full text-xl focus:outline-none"
-          />
         </div>
 
         <button

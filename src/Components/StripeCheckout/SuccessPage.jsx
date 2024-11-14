@@ -14,6 +14,7 @@ const SuccessPage = () => {
 
   const { currentUser } = useSelector((state) => state.user);
   const { completedOrder } = useSelector((state) => state.order);
+
   const buyer_id = currentUser?._id;
   const order_id = completedOrder?._id;
   const amount = completedOrder?.totalAmount; // Assuming you have totalAmount in the order
@@ -21,20 +22,31 @@ const SuccessPage = () => {
   useEffect(() => {
     const storeTransactionData = async () => {
       try {
-        if (sessionId && order_id && buyer_id && amount) {
-          // Send data to the backend to store the transaction
+        // Check if all required data is available
+        if (!sessionId || !order_id || !buyer_id || !amount) {
+          setPaymentStatus("Invalid session data. Please try again.");
+          return;
+        }
+
+        // Step 1: Verify payment using sessionId by querying Stripe API
+        const stripeResponse = await axios.get(
+          `https://backend-qyb4mybn.b4a.run/payment/verify-session/${sessionId}`
+        );
+
+        if (stripeResponse.data.paymentStatus === "success") {
+          // Step 2: If payment is successful, store transaction details
           await axios.post("https://backend-qyb4mybn.b4a.run/payment/success", {
-            sessionId, // Send sessionId (can be useful for future reference)
+            sessionId,
             order_id,
             buyer_id,
-            amount, // Pass the amount if available
+            amount,
           });
 
           setPaymentStatus(
             "Payment was successful! Thank you for your purchase."
           );
         } else {
-          setPaymentStatus("Invalid session data. Please try again.");
+          setPaymentStatus("Payment failed. Please try again.");
         }
       } catch (error) {
         setPaymentStatus(
