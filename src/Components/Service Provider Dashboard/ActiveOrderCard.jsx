@@ -76,8 +76,8 @@ const ActiveOrderCard = ({ order, onOrderComplete, onUpdate }) => {
       {/* Client's Name */}
       <h3 className="mb-2 font-bold text-lg">
         {order?.accepted_by === "buyer"
-          ? "Service Provider: " + order?.service_provider_id?.name
-          : "Client: " + order?.buyer_id?.name}
+          ? "Service Provider: " + (order?.service_provider_id?.name || "N/A")
+          : "Client: " + (order?.buyer_id?.name || "N/A")}
       </h3>
 
       {/* Service Provided */}
@@ -137,27 +137,49 @@ const ActiveOrderCard = ({ order, onOrderComplete, onUpdate }) => {
             </>
           )}
 
-        {/* Button for the service provider to complete the order */}
-        {order?.order_status !== "pending confirmation" &&
+        {/* Buttons for the service provider to complete the order */}
+        {(order?.order_status === "in progress" ||
+          order?.order_status === "pending confirmation") &&
           user_type === "service_provider" && (
-            <button
-              onClick={handleOrderComplete} // Service provider marks the order as complete
-              disabled={loadingState.complete} // Disable button when loading
-              className={`w-full inline-block px-4 py-2 ${
-                loadingState.complete ? "bg-green-400" : "bg-green-500"
-              } text-white rounded-lg text-center mt-4`}
-            >
-              {loadingState.complete ? (
-                <FontAwesomeIcon
-                  icon={faSpinner}
-                  spin
-                  className="mx-auto w-5 h-5"
-                />
-              ) : (
-                "Mark as Complete"
-              )}
-            </button>
+            <>
+              <button
+                onClick={handleOrderComplete} // Service provider marks the order as complete
+                disabled={loadingState.complete} // Disable button when loading
+                className={`w-full inline-block px-4 py-2 ${
+                  loadingState.complete ? "bg-green-400" : "bg-green-500"
+                } text-white rounded-lg text-center mt-4`}
+              >
+                {loadingState.complete ? (
+                  <FontAwesomeIcon
+                    icon={faSpinner}
+                    spin
+                    className="mx-auto w-5 h-5"
+                  />
+                ) : (
+                  "Mark as Complete"
+                )}
+              </button>
+            </>
           )}
+
+        {/* Buttons for both buyer and service provider to complete the order */}
+        {order?.order_status === "in progress" && user_type === "buyer" && (
+          <button
+            onClick={handleBuyerOrderComplete} // Buyer confirms completion of the service
+            disabled={loadingState.buyerComplete}
+            className="inline-block bg-green-500 mt-4 px-4 py-2 rounded-lg w-full text-center text-white"
+          >
+            {loadingState.buyerComplete ? (
+              <FontAwesomeIcon
+                icon={faSpinner}
+                spin
+                className="mx-auto w-5 h-5"
+              />
+            ) : (
+              "Mark as Complete"
+            )}
+          </button>
+        )}
       </div>
     </div>
   );
