@@ -21,11 +21,12 @@ const SuccessPage = () => {
     const storeTransactionData = async () => {
       try {
         if (sessionId && order_id && buyer_id) {
-          // Send data to the backend to store transaction
+          // Send data to the backend to store the transaction
           await axios.post("https://backend-qyb4mybn.b4a.run/payment/success", {
-            sessionId, // You can store the session_id for reference
+            sessionId, // Send sessionId (can be useful for future reference)
             order_id,
             buyer_id,
+            amount: completedOrder?.totalAmount, // Pass the amount if available
           });
 
           setPaymentStatus(
@@ -46,7 +47,7 @@ const SuccessPage = () => {
     };
 
     storeTransactionData();
-  }, [sessionId, order_id, buyer_id]);
+  }, [sessionId, order_id, buyer_id, completedOrder]);
 
   return (
     <div className="flex flex-col justify-center items-center bg-gradient-to-br from-indigo-600 to-indigo-400 p-6 min-h-screen">
