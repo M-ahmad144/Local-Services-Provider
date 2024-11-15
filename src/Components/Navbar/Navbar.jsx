@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   FaSearch,
   FaBell,
@@ -17,6 +18,8 @@ const Navbar = () => {
   const userRole = currentUser?.user_type || "guest"; // Fallback to 'guest' if currentUser is undefined
   const [menuOpen, setMenuOpen] = useState(false);
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
+  const navigate = useNavigate();
+  const [searchTerm, setSearchTerm] = useState("");
 
   const toggleMenu = () => {
     setMenuOpen((prev) => !prev);
@@ -25,6 +28,16 @@ const Navbar = () => {
   const toggleProfileDropdown = () => {
     setProfileDropdownOpen((prev) => !prev);
   };
+
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value)
+  }
+
+  const handleSearch = (e) => {
+    if (e.key === "Enter") {
+      navigate(`/services?search=${encodeURIComponent(searchTerm)}`);
+    }
+  }
 
   return (
     <nav className="flex justify-between items-center bg-white shadow-md px-6 py-4">
@@ -95,6 +108,8 @@ const Navbar = () => {
           <input
             type="text"
             placeholder="Search"
+            onChange={handleSearchChange}
+            onKeyDown={handleSearch}
             className="bg-gray-100 py-2 pr-3 pl-10 rounded-lg focus:outline-none focus:ring-2 focus:ring-custom-violet w-full text-gray-700"
           />
         </div>

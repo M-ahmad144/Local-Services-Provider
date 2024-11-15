@@ -1,14 +1,21 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import ServicesCard from '../Components/Services/ServicesCard';
 import { useSelector, useDispatch } from 'react-redux';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import Loader from '../Components/loader';
 
-const getServices = async () => {
-    const response = await axios.get(`https://backend-qyb4mybn.b4a.run/serviceProvider/get-all-services`);
-    return response.data;
+const getServices = async (searchTerm = '') => {
+    if (searchTerm) {
+        const response = await axios.get(`http://localhost:8080/serviceProvider/search`, {
+            params: { query: searchTerm },
+        });
+        return response.data;
+    } else {
+        const response = await axios.get(`https://backend-qyb4mybn.b4a.run/serviceProvider/get-all-services`);
+        return response.data;
+    }
 };
 
 const getUser = async (user_id) => {
@@ -21,12 +28,16 @@ const getUser = async (user_id) => {
 
 
 const Services = () => {
+    const location = useLocation();
+    const searchParams = new URLSearchParams(location.search);
+    const searchTerm = searchParams.get('search')?.toLowerCase() || '';
+    console.log(searchTerm)
     const { currentUser } = useSelector((state) => state.user);
     const navigate = useNavigate();
 
     const { data: servicesData, error: servicesError, isLoading: servicesLoading } = useQuery({
-        queryKey: ['services'],
-        queryFn: getServices,
+        queryKey: ['services', searchTerm],
+        queryFn: () => getServices(searchTerm),
     });
 
 
@@ -34,7 +45,7 @@ const Services = () => {
         return <Loader />;
     }
     else {
-        console.log(servicesData)
+        console.log('')
 
     }
 
