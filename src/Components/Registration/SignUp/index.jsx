@@ -4,7 +4,7 @@ import apple from "../../../assets/apple.png";
 import passwordshow from "../../../assets/eye.png";
 import passwordnotshow from "../../../assets/closeEye.png";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import Loader from "../../loader/index"; // Import the loader component
+// import Loader from "../../loader/index"; // Import the loader component
 import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google";
 import { useDispatch } from "react-redux";
 import {
@@ -44,9 +44,24 @@ const Signup = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     setLoading(true); // Show loader on form submission
     const { fullName, email, password } = formData;
 
+
+    if (!password.match(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*])[a-zA-Z\d!@#$%^&*]{8,}$/)) {
+      notifyError("Password must be at least 8 characters long and contain at least one number, one lowercase letter, one uppercase letter, and one special character."); // Display error notification
+      setLoading(false); // Hide loader after request completes
+      return;
+    }
+    
+
+    // check the gmail is end with @gmail.com or not
+    if (!email.endsWith("@gmail.com")) {
+      notifyError("Please enter a valid Gmail address."); // Display error notification
+      setLoading(false); // Hide loader after request completes
+      return;
+    }
     try {
       // Make the POST request to the server
       const response = await fetch(
@@ -122,9 +137,7 @@ const Signup = () => {
   return (
     <>
       <GoogleOAuthProvider clientId="697063750023-7nha10stlk2j37gijq3p2kvgbmpmpu9r.apps.googleusercontent.com">
-        {/* Loader Component: Show only if loading */}
-        {loading && <Loader />}
-
+      
         {/* Toast Notifications */}
         <ToastContainer />
 
