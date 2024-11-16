@@ -3,7 +3,11 @@ import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useLocation } from "react-router-dom";
 import { useDispatch } from "react-redux";
-
+import {
+  signInStart,
+  signInFailure,
+  signInSuccess,
+} from "../../../Redux/Slicer";
 
 const RoleSelection = () => {
   const [selectedRole, setSelectedRole] = useState(null);
@@ -11,7 +15,7 @@ const RoleSelection = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { email } = location.state || {}; // Safely destructure 'email'
-
+  const dispatch = useDispatch();
   const handleRoleSelect = (role) => {
     setSelectedRole(role);
   };
@@ -21,7 +25,7 @@ const RoleSelection = () => {
 
     setLoading(true); // Show loader on form submission
     console.log(email);
-
+    dispatch(signInStart());
     try {
       // Make the POST request to the server
       const response = await fetch(
@@ -43,11 +47,18 @@ const RoleSelection = () => {
         throw new Error("Role selection failed!"); // Handle error
       } else {
         console.log("Role selection successful:", data.data);
-        navigate("/signin")
+        dispatch(signInSuccess(data.data));
+        if (data.data.user_type === "service provider") {
+          navigate("/profile", { state: { user: data.data } });
+        } else {
+          navigate("/services", { state: { user: data.data } });
+        }  
+        // navigate("/signin")
        
       }
     } catch (error) {
       console.error("Error:", error); // Handle errors
+      dispatch(signInFailure(data.error));
     } finally {
       setLoading(false); // Hide loader after request completes
     }
