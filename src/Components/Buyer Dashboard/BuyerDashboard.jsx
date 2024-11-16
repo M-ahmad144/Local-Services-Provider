@@ -9,6 +9,7 @@ import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
 import { useSelector } from "react-redux";
 import Loader from "../loader";
+import DisputedOrders from "../Service Provider Dashboard/DisputedOrder";
 
 // Function to fetch pending orders
 const getPending = async (user_id, user_type) => {
@@ -25,6 +26,12 @@ const getInProgress = async (user_id, user_type) => {
   return response.data;
 };
 
+const getDisputed = async (user_id, user_type) => {
+  console.log(user_id, user_type)
+  const response = await axios.get(`https://backend-qyb4mybn.b4a.run/order/disputed?user_type=${user_type}&user_id=${user_id}`);
+  return response.data;
+};
+
 const BuyerDashboard = () => {
   const { currentUser } = useSelector((state) => state.user);
   const [reload, setReload] = useState(false);
@@ -32,7 +39,7 @@ const BuyerDashboard = () => {
   const user_id = currentUser._id;
   const user_type = currentUser.user_type;
 
-  console.log(user_id,user_type)
+  console.log(user_id, user_type)
 
   const {
     data: pendingOrders,
@@ -58,6 +65,13 @@ const BuyerDashboard = () => {
     cacheTime: 0,
   });
 
+  const { data: disputedOrders, error: disputedOrdersError, isLoading: disputedOrdersLoading, refetch: refetchDisputedOrders } = useQuery({
+    queryKey: ['disputed_orders', user_id],
+    queryFn: () => getDisputed(user_id, user_type),
+    staleTime: 0,
+    cacheTime: 0,
+  });
+
   const UpdateReload = async () => {
     setLoading(true);
     console.log("Triggering refetch and re-render...");
@@ -67,23 +81,22 @@ const BuyerDashboard = () => {
 
     console.log("Updated pendingOrders:", updatedPendingOrders);
     console.log("Updated inProgressOrders:", updatedInProgressOrders);
+    const { data: updatedDisputedOrders } = await refetchDisputedOrders();
 
     setReload((prev) => !prev);
     setLoading(false);
   };
 
   // Show loader while fetching
-  if (pendingOrdersLoading || in_progressOrdersLoading || loading) {
+  if (pendingOrdersLoading || in_progressOrdersLoading || disputedOrdersLoading || loading) {
     return <Loader />;
   }
 
+
+
   // Show error if there is one
-  if (pendingOrdersError || in_progressOrdersError) {
-    return (
-      <div>
-        Error: {pendingOrdersError?.message || in_progressOrdersError?.message}
-      </div>
-    );
+  if (pendingOrdersError || in_progressOrdersError || disputedOrdersError) {
+    return <div>Error: {pendingOrdersError?.message || in_progressOrdersError?.message || disputedOrdersError?.message}</div>;
   }
 
   return (
@@ -102,6 +115,12 @@ const BuyerDashboard = () => {
             in_progressOrders={in_progressOrders}
             onUpdate={UpdateReload}
             key={`active-orders-${reload}`}
+          />
+          <DisputedOrders
+            in_DisputedOrders={disputedOrders}
+            key={`disputed-orders-${reload}`}
+            user = {user_type}
+            onUpdate={UpdateReload}
           />
           <PendingOrders
             pendingOrdersArr={pendingOrders}

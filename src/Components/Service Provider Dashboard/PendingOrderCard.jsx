@@ -21,6 +21,7 @@ const PendingOrderCard = ({ order, onRespond, onUpdate }) => {
     const handleResponse = (response) => {
         if (response == 'Accept') {
             const data = { user_type: user_type, order_id: order._id };
+            console.log('Data' , data)
             setLoading(true)
             axios.patch(`https://backend-qyb4mybn.b4a.run/order/accept`, data)
                 .then(response => {

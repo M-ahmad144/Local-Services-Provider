@@ -14,6 +14,9 @@ const Sidebar = ({ activeChat, setActiveChat, userId, setActiveChatTitle, setAct
     queryFn: () => fetchChats(userId),
   });
 
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
   // Show loader while fetching data
   if (isLoading) return <Loader />;
 
@@ -27,6 +30,25 @@ const Sidebar = ({ activeChat, setActiveChat, userId, setActiveChatTitle, setAct
       ) : (
         <div className="flex h-full">
           {/* Sidebar */}
+          <div
+            onClick={toggleSidebar}
+            className="bottom-4 left-4 z-50 fixed flex justify-center items-center bg-indigo-100 rounded-2xl w-10 h-10 text-indigo-700 cursor-pointer"
+          >
+            <svg
+              className="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"
+              ></path>
+            </svg>
+          </div>
           <div
             className={`fixed top-0 left-0 h-full w-64 bg-white shadow-lg transform ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"} z-40`}
             style={{ transition: "transform 0.3s ease" }}
@@ -45,6 +67,7 @@ const Sidebar = ({ activeChat, setActiveChat, userId, setActiveChatTitle, setAct
                       if (participant._id !== userId) {
                         return (
                           <ConversationButton
+                            
                             key={participant._id}
                             name={participant.name}
                             img={participant.profile_image}
@@ -53,6 +76,9 @@ const Sidebar = ({ activeChat, setActiveChat, userId, setActiveChatTitle, setAct
                             setActiveChat={setActiveChat}
                             setActiveChatTitle={setActiveChatTitle}
                             setActiveChatImg={setActiveChatImg}
+                            setIsSidebarOpen={setIsSidebarOpen}
+                            isSidebarOpen = {isSidebarOpen}
+
                           />
                         );
                       }
@@ -63,12 +89,12 @@ const Sidebar = ({ activeChat, setActiveChat, userId, setActiveChatTitle, setAct
               </div>
             </div>
           </div>
-  
+
           {/* Overlay to close sidebar */}
           {isSidebarOpen && (
             <div
               className="fixed inset-0 bg-black opacity-50 z-30"
-              onClick={() => setIsSidebarOpen(false)}
+              onClick={toggleSidebar}
             ></div>
           )}
         </div>
@@ -78,20 +104,23 @@ const Sidebar = ({ activeChat, setActiveChat, userId, setActiveChatTitle, setAct
 };
 
 // ConversationButton Component
-const ConversationButton = ({ name, chatId, activeChat, setActiveChat, setActiveChatTitle ,setActiveChatImg  , img }) => {
+const ConversationButton = ({ name, chatId, activeChat, setActiveChat, setActiveChatTitle, setActiveChatImg, img , setIsSidebarOpen,  isSidebarOpen}) => {
   return (
     <button
       onClick={() => {
         if (!activeChat) {
           setActiveChat(chatId); // Set the active chat
           setActiveChatTitle(name)
-          setActiveChatImg(img);  
+          setActiveChatImg(img);
+          setIsSidebarOpen(!isSidebarOpen)
+          
         }
         else {
           setActiveChat(chatId);
           // You might want to navigate to the chat area here if you're using react-router
           setActiveChatTitle(name)
-          setActiveChatImg(img);  
+          setActiveChatImg(img);
+          setIsSidebarOpen(!isSidebarOpen)
 
         }
       }}
