@@ -24,7 +24,7 @@ const RoleSelection = () => {
     if (!selectedRole) return;
 
     setLoading(true); // Show loader on form submission
-    console.log(email);
+    // console.log(email);
     dispatch(signInStart());
     try {
       // Make the POST request to the server
@@ -40,13 +40,13 @@ const RoleSelection = () => {
       );
 
       const data = await response.json(); // Parse response
-      console.log("Data:", data);
+      // console.log("Data:", data);
 
       // Check if the signup was successful
       if (!data.success) {
         throw new Error("Role selection failed!"); // Handle error
       } else {
-        console.log("Role selection successful:", data.data);
+        // console.log("Role selection successful:", data.data);
         dispatch(signInSuccess(data.data));
         if (data.data.user_type === "service provider") {
           navigate("/profile", { state: { user: data.data } });

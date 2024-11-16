@@ -45,7 +45,7 @@ function SignIn() {
        toast.error(data.message); // Error toast
 
       } else {
-        console.log("Success:", data.data);
+        // console.log("Success:", data.data);
         dispatch(signInSuccess(data.data));
         toast.success("Login successful!"); // Success toast
         // navigate("/profile", { state: { user: data.data } });
@@ -72,7 +72,7 @@ function SignIn() {
 
   const handleGoogleSignIn = async (credentialResponse) => {
     const { credential } = credentialResponse;
-    console.log("Google sign-in response:", credential);
+    // console.log("Google sign-in response:", credential);
     try {
       dispatch(signInStart());
       const response = await fetch(
@@ -90,7 +90,7 @@ function SignIn() {
       if (response.ok) {
         dispatch(signInSuccess(data.user));
         toast.success("Google sign-in successful!"); // Success toast
-        console.log("User signed in:", data.user);
+        // console.log("User signed in:", data.user);
         if (data.user.user_type === "service provider") {
           navigate("/profile", { state: { user: data.user } });
         } else {

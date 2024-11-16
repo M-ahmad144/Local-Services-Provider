@@ -98,7 +98,7 @@ const Signup = () => {
   // Google Sign-In handler
   const handleGoogleSignIn = async (credentialResponse) => {
     const { credential } = credentialResponse;
-    console.log("Google sign-in response:", credential);
+    // console.log("Google sign-in response:", credential);
 
     try {
       dispatch(signInStart());
@@ -117,7 +117,7 @@ const Signup = () => {
       if (response.ok) {
         // dispatch(signInSuccess(data.user));
         notifySuccess("Google Sign-In successful!"); // Display success notification
-        console.log("User signed in:", data.user);
+        // console.log("User signed in:", data.user);
         navigate("/role-selection", { state: { email: data.user.email } });
 
         // if (data.user.user_type === "service provider") {
