@@ -203,10 +203,10 @@ const AddServiceMultiStepForm = () => {
                   className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring focus:ring-indigo-500"
                 >
                   <option value="">Select Category</option>
-                  <option value="webDevelopment">Web Development</option>
-                  <option value="graphicDesign">Graphic Design</option>
-                  <option value="seo">SEO</option>
-                  <option value="contentWriting">Content Writing</option>
+                  <option value="Plumber">Plumber</option>
+                  <option value="Electrician">Electrician</option>
+                  <option value="Carpenter">Carpenter</option>
+                  <option value="Gardner">Gardner</option>
                 </select>
               </div>
             </div>

@@ -8,7 +8,7 @@ import Loader from '../Components/loader';
 
 const getServices = async (searchTerm = '') => {
     if (searchTerm) {
-        const response = await axios.get(`https://backend-qyb4mybn.b4a.run/serviceProvider/search`, {
+        const response = await axios.get(`https://backend-qyb4mybn.b4a.run:8080/serviceProvider/search`, {
             params: { query: searchTerm },
         });
         return response.data;
