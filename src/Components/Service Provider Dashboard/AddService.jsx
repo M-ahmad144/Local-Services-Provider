@@ -15,7 +15,7 @@ import 'react-toastify/dist/ReactToastify.css';
 const AddServiceMultiStepForm = () => {
   const navigate = useNavigate();
   const { currentUser } = useSelector((state) => state.user);
-  const userId = currentUser.data._id
+  const userId = currentUser._id
   const fileInputRef = useRef(null);
   const [fileProgress, setFileProgress] = useState(0);
   const [fileUploadError, setFileUploadError] = useState(null);
