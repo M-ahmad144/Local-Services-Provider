@@ -117,8 +117,18 @@ const Signup = () => {
       if (response.ok) {
         // dispatch(signInSuccess(data.user));
         notifySuccess("Google Sign-In successful!"); // Display success notification
-        // console.log("User signed in:", data.user);
+        console.log("User signed in:", data.user);
+        if(data.user.user_type==null){
         navigate("/role-selection", { state: { email: data.user.email } });
+        }
+        else{
+          dispatch(signInSuccess(data.user));
+          if (data.user.user_type === "service provider") {
+            navigate("/profile", { state: { user: data.user } });
+          } else {
+            navigate("/services", { state: { user: data.user } });
+          }
+        }
 
         // if (data.user.user_type === "service provider") {
         //   navigate("/profile", { state: { user: data.user } });
