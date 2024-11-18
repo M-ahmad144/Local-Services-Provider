@@ -90,12 +90,26 @@ function SignIn() {
       if (response.ok) {
         dispatch(signInSuccess(data.user));
         toast.success("Google sign-in successful!"); // Success toast
+        if(data.user.user_type==null){
+          navigate("/role-selection", { state: { email: data.user.email } });
+          }
+          else{
+            if (data.user.user_type === "service provider") {
+              navigate("/profile", { state: { user: data.user } });
+            } else {
+              navigate("/services", { state: { user: data.user } });
+            }
+          }
+
+
+
+
         // console.log("User signed in:", data.user);
-        if (data.user.user_type === "service provider") {
-          navigate("/profile", { state: { user: data.user } });
-        } else {
-          navigate("/services", { state: { user: data.user } });
-        }  
+        // if (data.user.user_type === "service provider") {
+        //   navigate("/profile", { state: { user: data.user } });
+        // } else {
+        //   navigate("/services", { state: { user: data.user } });
+        // }  
       } else {
         toast.error(data.message || "Google sign-in failed"); // Error toast
       }

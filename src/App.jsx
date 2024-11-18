@@ -73,7 +73,7 @@ function App() {
             <Route path="/addservice" element={<AddService />} />
             <Route path="/updateservice" element={<UpdateService />} />
             <Route path="/dashboard" element={<ServiceProviderDashboard />} />
-            <Route path="/user/dashboard" element={<BuyerDashboard />} />
+            <Route path="/client-dashboard" element={<BuyerDashboard />} />
             <Route path="/review" element={<FreelancerProfile />} />
             <Route path="/profile/*" element={<ProfileRoutes />} />
             <Route path="/settings/*" element={<SettingsRoutes />} />
