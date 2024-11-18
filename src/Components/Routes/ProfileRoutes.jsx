@@ -31,6 +31,7 @@ const getServices = async (user_id) => {
 
 const ProfileRoutes = () => {
   const { currentUser } = useSelector((state) => state.user);
+  console.log(currentUser)
   const user_id = currentUser._id;
   const location = useLocation();
   const { updated } = location.state || {};
