@@ -8,7 +8,7 @@ const UserProfile = () => {
   const { currentUser } = useSelector((state) => state.user);
   const getRatings = async () => {
       const ratings = await axios.get(
-          "http://localhost:8080/serviceProvider/ratings/" + currentUser._id
+          "https://backend-qyb4mybn.b4a.run/serviceProvider/ratings/" + currentUser._id
         );
         console.log(ratings)
         return ratings.data;
