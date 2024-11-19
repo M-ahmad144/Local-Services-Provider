@@ -24,11 +24,10 @@ const ActiveOrderCard = ({ order, onOrderComplete, onUpdate }) => {
       socket.on("connect", () => {
         console.log("Connected to Socket.io");
       });
-      return;
     }
 
     // Check if order and buyer_id exist before proceeding
-    if (order && order.buyer_id && order.buyer_id._id) {
+    if (user_type == "service provider" && order && order.buyer_id && order.buyer_id._id) {
       socket.emit("createChat", {
         senderId: user_id,
         receiverId: order.buyer_id._id,
@@ -36,14 +35,27 @@ const ActiveOrderCard = ({ order, onOrderComplete, onUpdate }) => {
     } else {
       console.log(order)
       console.error("Order or buyer_id is undefined");
-      return;
+    }
+
+    if (user_type == "buyer" && order && order.service_provider_id && order.service_provider_id._id) {
+      socket.emit("createChat", {
+        senderId: user_id,
+        receiverId: order.service_provider_id._id,
+      });
+    } else {
+      console.log(order)
+      console.error("Order or buyer_id is undefined");
     }
 
     // Listen for either the existing or newly created chat
     socket.on("chatExists", (chat) => {
       const chatId = chat._id; // Extract chat ID
       socket.emit("joinRoom", chat._id);
+      if (user_type === "service provider") {
       navigate(`/message/id?query=${encodeURIComponent(chatId)}&title=${encodeURIComponent(order.buyer_id?.name)}`); // Navigate to the message section with chat ID
+      } else {
+        navigate(`/message/id?query=${encodeURIComponent(chatId)}&title=${encodeURIComponent(order.service_provider_id?.name)}`); // Navigate to the message section with chat ID
+      }  
     });
     socket.on("chatCreated", (newChat) => {
       const chatId = newChat._id; // Extract chat ID
@@ -161,7 +173,7 @@ const ActiveOrderCard = ({ order, onOrderComplete, onUpdate }) => {
           onClick={handleChatClick}
           className="inline-block bg-custom-violet px-4 py-2 rounded-lg w-full text-center text-white"
         >
-          Chat with Client
+          Chat
         </button>
 
         {user_type === "buyer" ? (
