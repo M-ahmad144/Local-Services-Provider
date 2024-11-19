@@ -15,6 +15,16 @@ const getAllOrders = async (user_id) => {
     return response.data;
 };
 
+const getAmount = async (user_id) => {
+    const response = await axios.get(`https://backend-qyb4mybn.b4a.run/analytics/transactions?user_id=${user_id}`);
+    return response.data;
+};
+
+const getServicesCount = async (user_id) => {
+    const response = await axios.get(`https://backend-qyb4mybn.b4a.run/analytics/orders-count?user_id=${user_id}`);
+    return response.data;
+};
+
 const Analytics = () => {
     const { currentUser } = useSelector((state) => state.user);
     const user_id = currentUser._id;
@@ -26,15 +36,28 @@ const Analytics = () => {
         cacheTime: 0,
     });
 
-    if (OrdersLoading) {
+    const { data: amount, error: amountError, isLoading: amountLoading } = useQuery({
+        queryKey: ['amount', user_id],
+        queryFn: () => getAmount(user_id),
+        staleTime: 0,
+        cacheTime: 0,
+    });
+
+    const { data: orderCount, error: orderCountError, isLoading: orderCountLoading } = useQuery({
+        queryKey: ['order-count', user_id],
+        queryFn: () => getServicesCount(user_id),
+        staleTime: 0,
+        cacheTime: 0,
+    });
+
+    if (OrdersLoading || amountLoading || orderCountLoading) {
         return <Loader />;
     }
 
-    if (OrdersError) {
-        return <div>Error: {OrdersError?.message}</div>;
+    if (OrdersError || amountError || orderCountError) {
+        return <div>Error: {OrdersError?.message || amountError?.message || orderCountError?.message}</div>;
     }
 
-    // Doughnut Chart Data
     const statuses = ["pending", "in progress", "pending confirmation", "completed", "cancelled", "in dispute"];
     const filteredOrders = statuses.reduce((acc, status) => {
         acc[status] = Orders.filter(order => order.order_status?.toLowerCase().trim() === status).length;
@@ -57,7 +80,6 @@ const Analytics = () => {
         return acc;
     }, {});
 
-    console.log(monthlyOrder);
 
     const doughnutData = {
         labels: statuses,
@@ -85,31 +107,41 @@ const Analytics = () => {
         aspectRatio: 1,
     };
 
-    // Bar Chart Data - Monthly Orders
+
+    const labels = orderCount.map(item => item.service_title);
+    const data = orderCount.map(item => item.order_count);
+
     const barData = {
-        labels: Object.keys(monthlyOrder), // Use months as labels
+        labels: labels,
         datasets: [
             {
                 label: 'Order Count',
-                data: Object.values(monthlyOrder), // Use monthly order count
+                data: data,
                 backgroundColor: [
                     '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40',
                     '#FF5C8D', '#8A2BE2', '#FF7F50', '#2E8B57', '#FFD700', '#9370DB'
-                ], // Array of colors for each bar
+                ],
             },
         ],
     };
 
+    const barOptions = {
+        indexAxis: 'y', // Horizontal bars
+        scales: {
+          x: { beginAtZero: true },
+        },
+      };
+
     // Line Chart Data (Example: Orders Per Month)
-    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-    const monthlyOrders = Array.from({ length: 12 }, () => Math.floor(Math.random() * 20)); // Example data
+    const lineLabels = Object.keys(monthlyOrder); // Month-Year labels
+    const lineDataset = Object.values(monthlyOrder); // Monthly order counts
 
     const lineData = {
-        labels: months,
+        labels: lineLabels,
         datasets: [
             {
-                label: 'Orders Per Month',
-                data: monthlyOrders,
+                label: 'Monthly Orders',
+                data: lineDataset,
                 borderColor: '#FF6384',
                 backgroundColor: 'rgba(255, 99, 132, 0.2)',
                 tension: 0.3,
@@ -117,15 +149,24 @@ const Analytics = () => {
         ],
     };
 
+
+    const totalAmount = amount.reduce((total, item) => total + (item.amount || 0), 0)
+
     return (
         <div className="p-6">
             <h1 className="text-2xl font-bold mb-4">Service Provider Dashboard</h1>
 
             {/* Quick Stats */}
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+            <div className="grid grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
                 <div className="bg-white p-4 shadow rounded-lg">
                     <h3 className="text-lg font-semibold">Total Orders</h3>
                     <p className="text-xl font-bold">{Orders.length}</p>
+                </div>
+                <div className="bg-white p-4 shadow rounded-lg">
+                    <h3 className="text-lg font-semibold">Total Revenue</h3>
+                    <p className="text-xl font-bold text-green-500">
+                        ${new Intl.NumberFormat().format(totalAmount)}
+                    </p>
                 </div>
                 <div className="bg-white p-4 shadow rounded-lg">
                     <h3 className="text-lg font-semibold">Completed</h3>
@@ -141,6 +182,7 @@ const Analytics = () => {
                 </div>
             </div>
 
+
             {/* Charts */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {/* Doughnut Chart */}
@@ -153,8 +195,8 @@ const Analytics = () => {
 
                 {/* Bar Chart - Monthly Orders */}
                 <div className="bg-white p-4 shadow rounded-lg">
-                    <h2 className="text-lg font-bold mb-4">Monthly Orders</h2>
-                    <Bar data={barData} />
+                    <h2 className="text-lg font-bold mb-4">Numbre of Orders by services</h2>
+                    <Bar data={barData}  options={barOptions}/>
                 </div>
             </div>
 
