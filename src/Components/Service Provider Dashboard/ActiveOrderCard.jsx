@@ -21,7 +21,9 @@ const ActiveOrderCard = ({ order, onOrderComplete, onUpdate }) => {
 
   const handleChatClick = () => {
     if (!socket.connected) {
-      console.error("Socket not connected");
+      socket.on("connect", () => {
+        console.log("Connected to Socket.io");
+      });
       return;
     }
 
@@ -32,6 +34,7 @@ const ActiveOrderCard = ({ order, onOrderComplete, onUpdate }) => {
         receiverId: order.buyer_id._id,
       });
     } else {
+      console.log(order)
       console.error("Order or buyer_id is undefined");
       return;
     }
@@ -40,7 +43,7 @@ const ActiveOrderCard = ({ order, onOrderComplete, onUpdate }) => {
     socket.on("chatExists", (chat) => {
       const chatId = chat._id; // Extract chat ID
       socket.emit("joinRoom", chat._id);
-      navigate(`/message/id?query=${encodeURIComponent(chatId)}`); // Navigate to the message section with chat ID
+      navigate(`/message/id?query=${encodeURIComponent(chatId)}&title=${encodeURIComponent(order.buyer_id?.name)}`); // Navigate to the message section with chat ID
     });
     socket.on("chatCreated", (newChat) => {
       const chatId = newChat._id; // Extract chat ID

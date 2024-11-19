@@ -34,7 +34,9 @@ const ServiceDetails = () => {
         socket.on("chatExists", (chat) => {
             const chatId = chat._id; // Extract chat ID
             socket.emit("joinRoom", chat._id);
-            navigate(`/message/id?query=${encodeURIComponent(chatId)}`); // Navigate to the messageSection with chat ID
+            console.log(service.user_id.name)
+            console.log(service.user_id.profile_image)
+            navigate(`/message/id?query=${encodeURIComponent(chatId)}&title=${encodeURIComponent(service?.user_id?.name)}&img=${encodeURIComponent(service?.user_id?.profile_image)}`); // Navigate to the messageSection with chat ID
         });
         socket.on("chatCreated", (newChat) => {
             const chatId = newChat._id; // Extract chat ID

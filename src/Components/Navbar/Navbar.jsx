@@ -118,9 +118,19 @@ const Navbar = () => {
       {/* Right Side - Icons and Profile */}
       <div className="flex items-center space-x-4">
         <FaQuestionCircle className="w-5 h-5 text-gray-600 hover:text-indigo-600 cursor-pointer" />
-        <FaTh className="w-5 h-5 text-gray-600 hover:text-indigo-600 cursor-pointer" />
-        <FaBell className="w-5 h-5 text-gray-600 hover:text-indigo-600 cursor-pointer" />
-        <FaEnvelope className="w-5 h-5 text-gray-600 hover:text-indigo-600 cursor-pointer" />
+        {userRole == "buyer" && (
+        <Link to="/services">
+          <FaTh className="w-5 h-5 text-gray-600 hover:text-indigo-600 cursor-pointer" />
+        </Link>
+        )}
+        {userRole == "service provider" && (
+        <Link to="/dashboard">
+          <FaTh className="w-5 h-5 text-gray-600 hover:text-indigo-600 cursor-pointer" />
+        </Link>
+        )}
+        <Link to="/message">
+          <FaEnvelope className="w-5 h-5 text-gray-600 hover:text-indigo-600 cursor-pointer" />
+        </Link>
 
         {currentUser ? (
           <ProfileDropdown />
@@ -137,10 +147,13 @@ const Navbar = () => {
       </button>
 
       {/* Mobile Menu */}
-      {menuOpen && (
+      {menuOpen && userRole == "buyer" && (
         <div className="top-14 right-0 left-0 z-30 absolute flex flex-col space-y-4 md:hidden bg-white shadow-md p-4 text-gray-700">
           <Link to="/" className="hover:text-indigo-600">
             Home
+          </Link>
+          <Link to="/client-dashboard" className="hover:text-indigo-600">
+            Dashboard
           </Link>
           <Link to="/services" className="hover:text-indigo-600">
             Services
@@ -148,8 +161,22 @@ const Navbar = () => {
           <Link to="/message" className="hover:text-indigo-600">
             Messages
           </Link>
-          <Link to="/notifications" className="hover:text-indigo-600">
-            Notifications
+        </div>
+      )}
+
+{menuOpen && userRole == "service provider" && (
+        <div className="top-14 right-0 left-0 z-30 absolute flex flex-col space-y-4 md:hidden bg-white shadow-md p-4 text-gray-700">
+          <Link to="/" className="hover:text-indigo-600">
+            Home
+          </Link>
+          <Link to="/dashboard" className="hover:text-indigo-600">
+            Dashboard
+          </Link>
+          <Link to="/analytics" className="hover:text-indigo-600">
+            Analytics
+          </Link>
+          <Link to="/message" className="hover:text-indigo-600">
+            Messages
           </Link>
         </div>
       )}

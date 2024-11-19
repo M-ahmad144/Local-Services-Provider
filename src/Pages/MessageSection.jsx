@@ -4,11 +4,12 @@ import { useSelector } from "react-redux";
 import Sidebar from "../Components/Chat/Sidebar";
 import ChatArea from "../Components/Chat/ChatArea";
 import socket from "../Components/sockets/socket";
+import dummyimg from "../assets/dummy.png";
 
 const ChatSection = () => {
   const [activeChatId, setActiveChatId] = useState(); // Default active chat ID
   const [activeChatTitle, setActiveChatTitle] = useState()
-  const [activeChatImg, setActiveChatImg] = useState();
+  const [activeChatImg, setActiveChatImg] = useState("");
   const [chats, setChats] = useState({});
   const { currentUser } = useSelector((state) => state.user);
   const userId = currentUser._id
@@ -29,9 +30,11 @@ const ChatSection = () => {
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
     const chatId = queryParams.get("query"); // Assuming you may pass chat ID in the URL
+    console.log(chatId)
     if (chatId) {
       setActiveChatId(chatId);
-
+      setActiveChatTitle(queryParams.get("title"));
+      setActiveChatImg(queryParams.get("img") || dummyimg);
       initializeChat(chatId);
     }
   }, [location.search]);
