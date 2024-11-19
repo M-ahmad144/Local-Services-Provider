@@ -117,11 +117,6 @@ const ActiveOrderCard = ({ order, onOrderComplete, onUpdate }) => {
     }
   };
 
-  if (!order || !order.buyer_id) {
-    // Fallback UI if order or buyer_id is not available
-    return <div>Loading order details...</div>;
-  }
-
   return (
     <div className="bg-white shadow-md hover:shadow-lg p-6 rounded-lg transition-shadow">
       {/* Client's Name */}
