@@ -161,58 +161,78 @@ const ActiveOrderCard = ({ order, onOrderComplete, onUpdate }) => {
           Chat with Client
         </button>
 
-        {user_type === "buyer" &&
-        order.order_status === "pending confirmation" ? (
-          <div className="flex flex-col space-y-2 mt-2">
-            <p className="font-medium text-gray-700">
-              Your service provider has marked this order as{" "}
-              <span className="font-semibold text-green-600">completed</span>.
-              Please confirm or report any issues.
-            </p>
-            <div className="flex space-x-2">
-              <button
-                onClick={handleBuyerOrderComplete}
-                disabled={buyerCompleteLoader}
-                className="inline-flex flex-1 justify-center items-center bg-green-500 px-4 py-2 rounded-lg text-white"
-              >
-                {buyerCompleteLoader ? (
-                  <FontAwesomeIcon icon={faSpinner} spin className="w-5 h-5" />
-                ) : (
-                  "Mark as Complete"
-                )}
-              </button>
-              <button
-                onClick={handleBuyerOrderDispute}
-                disabled={buyerReportLoader}
-                className="inline-flex flex-1 justify-center items-center bg-red-500 px-4 py-2 rounded-lg text-white"
-              >
-                {buyerReportLoader ? (
-                  <FontAwesomeIcon icon={faSpinner} spin className="w-5 h-5" />
-                ) : (
-                  "Report"
-                )}
-              </button>
+        {user_type === "buyer" ? (
+          order.order_status === "pending confirmation" ? (
+            <div className="flex flex-col space-y-2 mt-2">
+              <p className="font-medium text-gray-700">
+                Your service provider has marked this order as{" "}
+                <span className="font-semibold text-green-600">completed</span>.
+                Please confirm or report any issues.
+              </p>
+              <div className="flex space-x-2">
+                <button
+                  onClick={handleBuyerOrderComplete}
+                  disabled={buyerCompleteLoader}
+                  className="inline-flex flex-1 justify-center items-center bg-green-500 px-4 py-2 rounded-lg text-white"
+                >
+                  {buyerCompleteLoader ? (
+                    <FontAwesomeIcon icon={faSpinner} spin className="w-5 h-5" />
+                  ) : (
+                    "Mark as Complete"
+                  )}
+                </button>
+                <button
+                  onClick={handleBuyerOrderDispute}
+                  disabled={buyerReportLoader}
+                  className="inline-flex flex-1 justify-center items-center bg-red-500 px-4 py-2 rounded-lg text-white"
+                >
+                  {buyerReportLoader ? (
+                    <FontAwesomeIcon icon={faSpinner} spin className="w-5 h-5" />
+                  ) : (
+                    "Report"
+                  )}
+                </button>
+              </div>
             </div>
-          </div>
-        ) : (
-          <button
-            onClick={handleOrderComplete}
-            disabled={completeLoader}
-            className={`w-full inline-block px-4 py-2 ${
-              completeLoader ? "bg-green-400" : "bg-green-500"
+          ) : order.order_status === "in progress" ? (
+            <p className="font-medium text-blue-500 mt-2">
+              Your order is currently <span className="font-semibold">in progress</span>.
+              Please wait for the service provider to mark it as completed.
+            </p>
+          ) : (
+            <button
+              onClick={handleOrderComplete}
+              disabled={completeLoader}
+              className={`w-full inline-block px-4 py-2 ${completeLoader ? "bg-green-400" : "bg-green-500"
+                } text-white rounded-lg text-center mt-1`}
+            >
+              {completeLoader ? (
+                <FontAwesomeIcon
+                  icon={faSpinner}
+                  spin
+                  className="mx-auto w-5 h-5"
+                />
+              ) : (
+                "Mark as Complete"
+              )}
+            </button>
+          )
+        ) : <button
+          onClick={handleOrderComplete}
+          disabled={completeLoader}
+          className={`w-full inline-block px-4 py-2 ${completeLoader ? "bg-green-400" : "bg-green-500"
             } text-white rounded-lg text-center mt-1`}
-          >
-            {completeLoader ? (
-              <FontAwesomeIcon
-                icon={faSpinner}
-                spin
-                className="mx-auto w-5 h-5"
-              />
-            ) : (
-              "Mark as Complete"
-            )}
-          </button>
-        )}
+        >
+          {completeLoader ? (
+            <FontAwesomeIcon
+              icon={faSpinner}
+              spin
+              className="mx-auto w-5 h-5"
+            />
+          ) : (
+            "Mark as Complete"
+          )}
+        </button>}
       </div>
     </div>
   );
