@@ -30,7 +30,7 @@ import BuyerDashboard from "./Components/Buyer Dashboard/BuyerDashboard";
 import StripePaymentPage from "./Components/StripeCheckout/Stripe";
 import SuccessPage from "./Components/StripeCheckout/SuccessPage";
 import CancelPage from "./Components/StripeCheckout/CancelPage";
-
+import AdminDashboard from "./Components/Admin Dashboard/AdminDashboard";
 import { useSelector } from "react-redux";
 import Analytics from "./Components/Service Provider Dashboard/Analytics";
 
@@ -84,7 +84,7 @@ function App() {
             <Route path="/success" element={<SuccessPage />} />
             <Route path="/cancel" element={<CancelPage />} />
             <Route path="/analytics" element={<Analytics />} />
-
+            <Route path="/admin-dashboard" element={<AdminDashboard />} />
           </Route>
         </Routes>
       </Router>
