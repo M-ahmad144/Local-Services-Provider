@@ -1,14 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState , useEffect } from 'react';
 import Review from './Review';
 import { useDispatch } from "react-redux";
-const dispatch = useDispatch();
 import { useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
-import { useEffect,useState } from 'react';
 import axios from 'axios';
 
 
 const FreelancerProfile = () => {
+    const dispatch = useDispatch();
     const location = useLocation();
     const { order_id, buyer_id } = location.state || {};
     const { currentUser } = useSelector((state) => state.user);

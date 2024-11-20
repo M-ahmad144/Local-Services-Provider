@@ -19,9 +19,6 @@ const ServicesSection = ({ data }) => {
           </p>
         )}
       </div>
-      <button className="mt-4 px-4 py-2 bg-[#5C6BC0] text-white font-semibold rounded-lg hover:bg-[#3E4B83]">
-        Add Service
-      </button>
     </div>
   );
 };

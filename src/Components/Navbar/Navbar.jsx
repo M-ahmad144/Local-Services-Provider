@@ -12,6 +12,7 @@ import {
 import { Link } from "react-router-dom";
 import ProfileDropdown from "./profileDropDown"; // Ensure the import path is correct
 import { useSelector } from "react-redux";
+import logo from '../../assets/Logo.jpg'
 
 const Navbar = () => {
   const { currentUser } = useSelector((state) => state.user);
@@ -30,14 +31,14 @@ const Navbar = () => {
   };
 
   const handleSearchChange = (e) => {
-    setSearchTerm(e.target.value)
-  }
+    setSearchTerm(e.target.value);
+  };
 
   const handleSearch = (e) => {
     if (e.key === "Enter") {
       navigate(`/services?search=${encodeURIComponent(searchTerm)}`);
     }
-  }
+  };
 
   return (
     <nav className="flex justify-between items-center bg-white shadow-md px-6 py-4">
@@ -46,7 +47,7 @@ const Navbar = () => {
         {/* Logo */}
         <Link to="/">
           <img
-            src="https://via.placeholder.com/100x30?text=LSP"
+            src={logo}
             alt="LSP Logo"
             className="mr-6 h-6"
           />
@@ -101,7 +102,7 @@ const Navbar = () => {
         </div>
       </div>
 
-      {/* Center - Search Bar */}
+      {/* Center - Search Bar (Desktop) */}
       <div className="md:block flex-grow hidden mx-6">
         <div className="relative">
           <FaSearch className="top-3 left-3 absolute text-gray-400" />
@@ -118,15 +119,15 @@ const Navbar = () => {
       {/* Right Side - Icons and Profile */}
       <div className="flex items-center space-x-4">
         <FaQuestionCircle className="w-5 h-5 text-gray-600 hover:text-indigo-600 cursor-pointer" />
-        {userRole == "buyer" && (
-        <Link to="/services">
-          <FaTh className="w-5 h-5 text-gray-600 hover:text-indigo-600 cursor-pointer" />
-        </Link>
+        {userRole === "buyer" && (
+          <Link to="/services">
+            <FaTh className="w-5 h-5 text-gray-600 hover:text-indigo-600 cursor-pointer" />
+          </Link>
         )}
-        {userRole == "service provider" && (
-        <Link to="/dashboard">
-          <FaTh className="w-5 h-5 text-gray-600 hover:text-indigo-600 cursor-pointer" />
-        </Link>
+        {userRole === "service provider" && (
+          <Link to="/dashboard">
+            <FaTh className="w-5 h-5 text-gray-600 hover:text-indigo-600 cursor-pointer" />
+          </Link>
         )}
         <Link to="/message">
           <FaEnvelope className="w-5 h-5 text-gray-600 hover:text-indigo-600 cursor-pointer" />
@@ -147,7 +148,7 @@ const Navbar = () => {
       </button>
 
       {/* Mobile Menu */}
-      {menuOpen && userRole == "buyer" && (
+      {menuOpen && userRole === "buyer" && (
         <div className="top-14 right-0 left-0 z-30 absolute flex flex-col space-y-4 md:hidden bg-white shadow-md p-4 text-gray-700">
           <Link to="/" className="hover:text-indigo-600">
             Home
@@ -161,10 +162,22 @@ const Navbar = () => {
           <Link to="/message" className="hover:text-indigo-600">
             Messages
           </Link>
+
+          {/* Mobile Search Bar */}
+          <div className="relative mt-4">
+            <FaSearch className="top-3 left-3 absolute text-gray-400" />
+            <input
+              type="text"
+              placeholder="Search"
+              onChange={handleSearchChange}
+              onKeyDown={handleSearch}
+              className="bg-gray-100 py-2 pr-3 pl-10 rounded-lg focus:outline-none focus:ring-2 focus:ring-custom-violet w-full text-gray-700"
+            />
+          </div>
         </div>
       )}
 
-{menuOpen && userRole == "service provider" && (
+      {menuOpen && userRole === "service provider" && (
         <div className="top-14 right-0 left-0 z-30 absolute flex flex-col space-y-4 md:hidden bg-white shadow-md p-4 text-gray-700">
           <Link to="/" className="hover:text-indigo-600">
             Home
@@ -178,6 +191,18 @@ const Navbar = () => {
           <Link to="/message" className="hover:text-indigo-600">
             Messages
           </Link>
+
+          {/* Mobile Search Bar */}
+          <div className="relative mt-4">
+            <FaSearch className="top-3 left-3 absolute text-gray-400" />
+            <input
+              type="text"
+              placeholder="Search"
+              onChange={handleSearchChange}
+              onKeyDown={handleSearch}
+              className="bg-gray-100 py-2 pr-3 pl-10 rounded-lg focus:outline-none focus:ring-2 focus:ring-custom-violet w-full text-gray-700"
+            />
+          </div>
         </div>
       )}
     </nav>
