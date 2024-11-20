@@ -62,7 +62,7 @@ const SuccessPage = () => {
       {/* Top-right button */}
       <button
         className="top-4 right-4 absolute bg-indigo-600 hover:bg-indigo-700 shadow px-4 py-2 rounded text-white"
-        onClick={() => navigate("/review")} // Navigate to /review on click
+        onClick={() => navigate("/review" ,{state :{order_id,buyer_id}} )} // Navigate to /review on click
       >
         Leave a Review
       </button>

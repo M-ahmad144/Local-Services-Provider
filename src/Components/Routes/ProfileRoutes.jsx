@@ -34,15 +34,17 @@ const ProfileRoutes = () => {
   console.log(currentUser)
   const user_id = currentUser._id;
   const location = useLocation();
-  const { updated } = location.state || {};
-
+  
+  const { updated , userId } = location.state || {};
+  
+  const idToUse = userId || user_id;
   const {
     data: userData,
     error: userError,
     isLoading: userLoading,
   } = useQuery({
     queryKey: ["user", user_id],
-    queryFn: () => getUser(user_id),
+    queryFn: () => getUser(idToUse),
   });
 
   const {
@@ -51,7 +53,7 @@ const ProfileRoutes = () => {
     isLoading: servicesLoading,
   } = useQuery({
     queryKey: ["services", user_id],
-    queryFn: () => getServices(user_id),
+    queryFn: () => getServices(idToUse),
   });
 
   if (userLoading || servicesLoading) {
@@ -73,6 +75,7 @@ const ProfileRoutes = () => {
               email: userData.email,
               profile_image: userData.profile_image,
               updated: updated,
+              user_type:currentUser.user_type
             }}
           />
           <AboutSection data={{ about: userData.profile_description }} />

@@ -43,7 +43,9 @@ const ServiceDetails = () => {
             socket.emit("joinRoom", newChat._id);
             navigate(`/message/id?query=${encodeURIComponent(chatId)}`);
         });
-      };
+    };
+
+    console.log(service)
 
     return (
         <div className="container mx-auto px-4 py-10 max-w-4xl">
@@ -58,13 +60,13 @@ const ServiceDetails = () => {
                         className="w-full h-64 object-cover rounded-md mb-4"
                     />
 
-                    
+
                     <p className="text-xl font-bold mb-4">From Price: Rs {service.price}</p>
                     <p className="text-xl font-bold mb-4">No of revisions: Rs {service.revision_count}</p>
 
 
                     <div className="flex items-center mb-4">
-                        <Link to='/profile'>
+                        <Link to='/profile' state={{ userId: service.user_id._id }}>
                             <img
                                 src={service.user_id.profile_image}
                                 alt={service.name}
