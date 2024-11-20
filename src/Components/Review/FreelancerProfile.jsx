@@ -1,12 +1,44 @@
 import React, { useState } from 'react';
 import Review from './Review';
+import { useDispatch } from "react-redux";
+const dispatch = useDispatch();
+import { useSelector } from "react-redux";
+import { useLocation } from "react-router-dom";
+import { useEffect,useState } from 'react';
+import axios from 'axios';
 
 
 const FreelancerProfile = () => {
+    const location = useLocation();
+    const { order_id, buyer_id } = location.state || {};
+    const { currentUser } = useSelector((state) => state.user);
+    // use Effect to get the freelancer data
+    useEffect(() => {
+
+        const getFreelancerData = async () => {
+            try {
+              const response = await axios.post("http://localhost:8080/reviewdata", {
+                order_id,
+                buyer_id,
+              });
+              
+              console.log('Freelancer data:', response.data);
+            } catch (error) {
+                console.error('Error fetching freelancer data:', error);
+            }
+        };
+        getFreelancerData();
+
+
+    }, []);
+
+
+
+
     const freelancer = {
         id: 1,
-        name: "Jane Doe",
-        description: "Experienced web developer",
+        name: currentUser?.name,
+        description: "I am a professional freelancer with 5 years of experience in web development.",
         image: 'https://via.placeholder.com/80',
         reviews: [
             { clientName: "John Smith", rating: 5, comment: "Great job!", timestamp: "2024-09-01T14:00:00Z" },
