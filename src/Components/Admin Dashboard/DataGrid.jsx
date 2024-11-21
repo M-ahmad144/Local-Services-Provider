@@ -4,26 +4,12 @@ import ResponsivePagination from "react-responsive-pagination";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import "./Pagination.css";
 
-const AdminDashboard = () => {
-  const [users, setUsers] = useState([]);
+const AdminDashboard = ({user}) => {
+  const [users, setUsers] = useState(user.users || []);
   const [currentPage, setCurrentPage] = useState(1);
   const usersPerPage = 10;
 
-  useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const response = await axios.get(
-          "https://backend-qyb4mybn.b4a.run/api/get-all-users"
-        );
-        setUsers(response.data.users); // Assuming the response contains user data in `data.data`
-      } catch (error) {
-        console.error("Error fetching users:", error);
-      }
-    };
-    fetchUsers();
-  }, []);
 
-  // Pagination logic
   const indexOfLastUser = currentPage * usersPerPage;
   const indexOfFirstUser = indexOfLastUser - usersPerPage;
   const currentUsers = users.slice(indexOfFirstUser, indexOfLastUser);
