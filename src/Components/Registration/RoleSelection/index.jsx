@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useLocation } from "react-router-dom";
+// import { useDispatch } from "react-redux";
 import { useDispatch } from "react-redux";
 import {
   signInStart,
@@ -24,7 +25,11 @@ const RoleSelection = () => {
     if (!selectedRole) return;
 
     setLoading(true); // Show loader on form submission
+<<<<<<< Updated upstream
     // console.log(email);
+=======
+    console.log(email);
+>>>>>>> Stashed changes
     dispatch(signInStart());
     try {
       // Make the POST request to the server
@@ -46,8 +51,14 @@ const RoleSelection = () => {
       if (!data.success) {
         throw new Error("Role selection failed!"); // Handle error
       } else {
+<<<<<<< Updated upstream
         // console.log("Role selection successful:", data.data);
         dispatch(signInSuccess(data.data));
+=======
+        console.log("Role selection successful:", data.data);
+        dispatch(signInSuccess(data.data));
+        // toast.success("Login successful!"); // Success toast
+>>>>>>> Stashed changes
         if (data.data.user_type === "service provider") {
           navigate("/profile", { state: { user: data.data } });
         } else {
