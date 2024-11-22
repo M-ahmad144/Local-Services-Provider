@@ -12,24 +12,29 @@ const DisputedOrders = ({ in_DisputedOrders, onUpdate, user }) => {
             {
                 user === 'service provider' ? (
                     <>
-                        <h2 className="text-xl font-semibold mb-4">Disputed Orders</h2>
+                        <h1 className="text-3xl font-semibold mb-4 mt-4">Disputed Orders</h1>
                         <p className="text-red-500">You have got disputed orders. Chat with your client to fix them.</p>
                     </>
                 ) : (
                     <>
-                        <h2 className="text-xl font-semibold mb-4">Reported Orders</h2>
+                        <h1 className="text-3xl font-semibold mb-4 mt-4">Reported Orders</h1>
                     </>
                 )
             }
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-                {disputedOrders.map(order => (
-                    <DisputedOrderCard
-                        key={order._id}
-                        order={order}
-                        onUpdate={onUpdate}
-                    />
-                ))}
+                {disputedOrders.length === 0 ? (
+                    <p className="text-center text-xl font-semibold col-span-full">You don't have any disputed orders.</p>
+                ) : (
+                    disputedOrders.map(order => (
+                        <DisputedOrderCard
+                            key={order._id}
+                            order={order}
+                            onUpdate={onUpdate}
+                        />
+                    ))
+                )}
             </div>
+
         </>
     );
 };
