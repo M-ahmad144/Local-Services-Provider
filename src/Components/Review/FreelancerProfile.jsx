@@ -16,7 +16,7 @@ const FreelancerProfile = () => {
 
         const getFreelancerData = async () => {
             try {
-              const response = await axios.post("http://localhost:8080/reviewdata", {
+              const response = await axios.post("http://localhost:8080/review/reviewdata", {
                 order_id,
                 buyer_id,
               });
@@ -87,7 +87,7 @@ const FreelancerProfile = () => {
                     )}
                 </div>
 
-                <Review freelancer={freelancer} addReview={addReview} />
+                <Review order_id={order_id} buyer_id={buyer_id} />
             </div>
         </div>
     );

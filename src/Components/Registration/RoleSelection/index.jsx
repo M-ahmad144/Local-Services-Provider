@@ -25,7 +25,9 @@ const RoleSelection = () => {
     if (!selectedRole) return;
 
     setLoading(true); // Show loader on form submission
+
     // console.log(email);
+
     console.log(email);
     dispatch(signInStart());
     try {
@@ -50,9 +52,7 @@ const RoleSelection = () => {
       } else {
         // console.log("Role selection successful:", data.data);
         dispatch(signInSuccess(data.data));
-        console.log("Role selection successful:", data.data);
-        dispatch(signInSuccess(data.data));
-        // toast.success("Login successful!"); // Success toast
+
         if (data.data.user_type === "service provider") {
           navigate("/profile", { state: { user: data.data } });
         } else {
