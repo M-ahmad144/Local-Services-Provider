@@ -77,14 +77,12 @@ function App() {
             <Route path="/review" element={<FreelancerProfile />} />
             <Route path="/profile/*" element={<ProfileRoutes />} />
             <Route path="/settings/*" element={<SettingsRoutes />} />
-            <Route path="/editprofile" element={<EditProfile />} />
             <Route path="/manage-services" element={<ManageServices />} />
             <Route path="/edit-service" element={<EditService />} />
             <Route path="/payment" element={<StripePaymentPage />} />
             <Route path="/success" element={<SuccessPage />} />
             <Route path="/cancel" element={<CancelPage />} />
             <Route path="/analytics" element={<Analytics />} />
-
           </Route>
         </Routes>
       </Router>

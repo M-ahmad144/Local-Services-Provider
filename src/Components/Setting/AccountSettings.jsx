@@ -26,11 +26,14 @@ const AccountSettings = () => {
 
     // API call to change the password
     try {
-      const response = await axios.post("https://backend-qyb4mybn.b4a.run/api/change-password", {
-        email: userEmail,
-        currentPassword,
-        newPassword,
-      });
+      const response = await axios.post(
+        "https://backend-qyb4mybn.b4a.run/api/change-password",
+        {
+          email: userEmail,
+          currentPassword,
+          newPassword,
+        }
+      );
 
       // Handle success and error response
       if (response.data.success) {
@@ -47,14 +50,13 @@ const AccountSettings = () => {
   return (
     <>
       <ToastContainer /> {/* Include ToastContainer to display toasts */}
-
       <h2 className="font-bold text-3xl text-center text-gray-900 md:text-4xl">
         Account Settings
       </h2>
-
       {isGoogleUser ? (
-        <p className="text-center text-gray-600 mt-4">
-          Password changes are managed through your Google account. Please visit your Google account settings to update your password.
+        <p className="mt-4 text-center text-gray-600">
+          Password changes are managed through your Google account. Please visit
+          your Google account settings to update your password.
         </p>
       ) : (
         <form onSubmit={handleSubmit} className="space-y-6 md:space-y-8 w-full">

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { FaBars, FaTimes } from "react-icons/fa";
 
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(false); // State to manage sidebar visibility
@@ -9,36 +10,31 @@ const Sidebar = () => {
 
   return (
     <>
-      {/* Button to toggle sidebar on mobile */}
+      {/* Button to toggle sidebar */}
       <button
-        className="top-30 left-4 z-50 fixed lg:hidden bg-blue-600 p-2 rounded-md text-white rotate-90"
+        className="top-4 left-4 z-50 fixed md:hidden bg-blue-600 shadow-md p-3 rounded-full text-white"
         onClick={toggleSidebar}
       >
-        ☰
+        {isOpen ? <FaTimes size={20} /> : <FaBars size={20} />}
       </button>
 
       {/* Sidebar */}
       <div
-        className={`fixed left-0 bg-white shadow-lg p-4 border-r w-64 h-full transition-transform duration-300 ease-in-out z-40 lg:translate-x-0 lg:block ${
+        className={`fixed left-0 top-0 bg-white shadow-lg border-r h-full w-64 z-40 transition-transform duration-300 ease-in-out md:translate-x-0 ${
           isOpen ? "translate-x-0" : "-translate-x-full"
         }`}
-        style={{ top: "64px" }} // Adjust based on navbar height
       >
-        <div className="flex justify-between items-center mb-6">
+        <div className="flex justify-between items-center p-4">
           <div className="font-semibold text-gray-900 text-xl">Logo</div>
-          <div className="text-gray-600 text-xl">?</div>
+          <button
+            className="md:hidden text-gray-600 hover:text-gray-900"
+            onClick={toggleSidebar}
+          >
+            <FaTimes size={20} />
+          </button>
         </div>
-        <ul className="space-y-4">
-          {[
-            "profile",
-            "account",
-            "notifications",
-            "privacy",
-            "payments",
-            "security",
-            "subscription",
-            "help",
-          ].map((item) => (
+        <ul className="space-y-4 p-4">
+          {["editProfile", "account", "help"].map((item) => (
             <li key={item}>
               <Link
                 to={`/settings/${item}`}
@@ -55,7 +51,7 @@ const Sidebar = () => {
       {/* Overlay for mobile when sidebar is open */}
       {isOpen && (
         <div
-          className="z-30 fixed inset-0 lg:hidden bg-black opacity-50"
+          className="z-30 fixed inset-0 md:hidden bg-black opacity-50"
           onClick={toggleSidebar}
         ></div>
       )}

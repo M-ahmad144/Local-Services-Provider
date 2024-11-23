@@ -41,7 +41,7 @@ const EditProfile = () => {
 
   const navigate = useNavigate();
   const { currentUser } = useSelector((state) => state.user);
-  const user_id = currentUser.data._id;
+  const user_id = currentUser._id;
 
   const { data, error, isLoading } = useQuery({
     queryKey: ["user", user_id],
