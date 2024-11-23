@@ -32,6 +32,7 @@ const getDisputed = async (user_id, user_type) => {
 const ServiceProviderDashboard = () => {
     const [reload, setReload] = useState(false); // State to trigger re-render
     const [loading , setLoading] = useState(false)
+    const [activeSection, setActiveSection] = useState('profile');
 
     const { currentUser } = useSelector((state) => state.user);
     const user_id = currentUser._id;
@@ -97,8 +98,6 @@ const ServiceProviderDashboard = () => {
                     {/* Profile Section */}
                     <UserProfile key={`profile-${reload}`} />
 
-                    {/* Earnings Section */}
-                    <Earnings key={`earnings-${reload}`} />
                 </div>
 
                 {/* Main Content Area (Current Services, Active Orders, Pending Requests, Completed Orders) */}

@@ -63,7 +63,7 @@ const OtpVerification = () => {
   const handleResendOtp = async () => {
     setIsResending(true); // Set resending state
     try {
-      const response = await axios.post('http://localhost:8080/api/resend-OTP', { _id: _id ,email: email });
+      const response = await axios.post('https://backend-qyb4mybn.b4a.run/api/resend-OTP', { _id: _id ,email: email });
       console.log(response);
       console.log(response.data);
       if (response.ok || response.data.success) {

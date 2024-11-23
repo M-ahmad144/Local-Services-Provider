@@ -6,6 +6,9 @@ import axios from "axios";
 const UserProfile = () => {
   // Sample user details (replace with real data or props)
   const { currentUser } = useSelector((state) => state.user);
+  const [userData, setUserData] = useState(null); 
+  const [ratings, setRatings] = useState();
+
   const getRatings = async () => {
       const ratings = await axios.get(
           "https://backend-qyb4mybn.b4a.run/serviceProvider/ratings/" + currentUser._id
@@ -13,11 +16,27 @@ const UserProfile = () => {
         console.log(ratings)
         return ratings.data;
     };
-    const [ratings, setRatings] = useState();
+
+    const fetchUserData = async () => {
+      const user_id = currentUser?._id; // Ensure safe access
+      if (!user_id) return; // Exit if user_id is not available
+      try {
+        const response = await fetch(
+          `https://backend-qyb4mybn.b4a.run/profile/user/${user_id}`
+        );
+        if (!response.ok) throw new Error("Failed to fetch user data");
+        const data = await response.json();
+        setUserData(data);
+      } catch (error) {
+        toast.error("Failed to load user data. Please try again.");
+      }
+    };
+    
     useEffect(() => {
         getRatings().then((res) => {
           setRatings(res.avgRating);
         });
+        fetchUserData()
     }, []);
 
   return (
@@ -26,7 +45,7 @@ const UserProfile = () => {
         <div className="flex items-center space-x-4">
           {/* User image */}
           <img
-            src={currentUser?.profile_image || dummyimg}
+            src={userData?.profile_image || dummyimg}
             alt="User Avatar"
             className="w-16 h-16 rounded-full object-cover"
           />

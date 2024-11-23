@@ -17,6 +17,7 @@ const ProfileHeader = ({ data }) => {
     data.updated = false
   }
 
+
   return (
     <>
       <ToastContainer />
@@ -35,14 +36,13 @@ const ProfileHeader = ({ data }) => {
           <p className="mt-2 text-[#6B6B76] text-sm md:text-xl">
             {data.email}
           </p>
-          <button className="bg-[#5469D4] hover:bg-[#4353A3] mt-4 px-4 py-2 rounded-lg text-white transition duration-300">
-            Contact Me
-          </button>
-          <Link to='/editProfile'>
-            <button className="bg-[#5469D4] hover:bg-[#4353A3] mt-4 ml-4 px-4 py-2 rounded-lg text-white transition duration-300">
-              Edit Profile
-            </button>
-          </Link>
+          {data.user_type === 'service provider' && (
+            <Link to='/editProfile'>
+              <button className="bg-[#5469D4] hover:bg-[#4353A3] mt-4 ml-4 px-4 py-2 rounded-lg text-white transition duration-300">
+                Edit Profile
+              </button>
+            </Link>
+          )}
         </div>
       </div>
     </>

@@ -149,8 +149,9 @@ const Signup = () => {
   return (
     <>
       <GoogleOAuthProvider clientId="697063750023-7nha10stlk2j37gijq3p2kvgbmpmpu9r.apps.googleusercontent.com">
+
       
-        {/* Toast Notifications */}
+       {/* Toast Notifications */}
         <ToastContainer />
 
         {/* Form and Content */}

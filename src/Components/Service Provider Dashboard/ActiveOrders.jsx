@@ -11,17 +11,20 @@ const ActiveOrders = ({ in_progressOrders, onUpdate }) => {
   };
   return (
     <>
-      <h2 className="mb-4 font-semibold text-xl">Active Orders</h2>
-      <div className="gap-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3">
-        {activeOrders.map((order) => (
-          <ActiveOrderCard
-            key={order._id}
-            order={order}
-            onOrderComplete={handleOrderComplete}
-            onUpdate={onUpdate}
-          />
-        ))}
-      </div>
+      <h1 className="text-3xl font-semibold mb-4 mt-4">Active Orders</h1>
+      {activeOrders.length === 0 ? (
+        <p className="text-center text-xl font-semibold col-span-full">You don't have any active orders.</p>
+      ) : (
+        <div className="gap-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3">
+          {activeOrders.map((order) => (
+            <ActiveOrderCard
+              key={order._id}
+              order={order}
+              onOrderComplete={handleOrderComplete}
+              onUpdate={onUpdate}
+            />
+          ))}
+        </div>)}
     </>
   );
 };

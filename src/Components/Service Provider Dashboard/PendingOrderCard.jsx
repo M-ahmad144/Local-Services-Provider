@@ -2,7 +2,8 @@ import axios from 'axios';
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import Loader from '../loader';
-
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSpinner } from "@fortawesome/free-solid-svg-icons";
 
 const PendingOrderCard = ({ order, onRespond, onUpdate }) => {
     const { currentUser } = useSelector((state) => state.user);
@@ -17,50 +18,43 @@ const PendingOrderCard = ({ order, onRespond, onUpdate }) => {
     const [loading, setLoading] = useState(false);
 
 
+    const [loadingAccept, setLoadingAccept] = useState(false);
+    const [loadingReject, setLoadingReject] = useState(false);
+    const [loadingSchedule, setLoadingSchedule] = useState(false);
+    const [loadingCounterPrice, setLoadingCounterPrice] = useState(false);
+
     // Handle response (Accept/Reject/Schedule)
     const handleResponse = (response) => {
-        if (response == 'Accept') {
+        if (response === 'Accept') {
             const data = { user_type: user_type, order_id: order._id };
-            console.log('Data' , data)
-            setLoading(true)
+            setLoadingAccept(true);
             axios.patch(`https://backend-qyb4mybn.b4a.run/order/accept`, data)
                 .then(response => {
-                    onUpdate()
-                    console.log(response.data)
-                    setLoading(false)
+                    onUpdate();
+                    console.log(response.data);
                 })
-                .catch(error => {
-                    console.log(error)
-                })
-                .finally(() => {
-                    setLoading(false)
-                })
-
+                .catch(error => console.error(error))
+                .finally(() => setLoadingAccept(false));
         }
-        if (response == 'Reject') {
+
+        if (response === 'Reject') {
             const data = { user_type: user_type, order_id: order._id };
-            setLoading(true)
+            setLoadingReject(true);
             axios.patch(`https://backend-qyb4mybn.b4a.run/order/reject`, data)
                 .then(response => {
-                    onUpdate()
-                    console.log(response.data)
-                    setLoading(false)
+                    onUpdate();
+                    console.log(response.data);
                 })
-                .catch(error => {
-                    console.log(error)
-                })
-                .finally(() => {
-                    setLoading(false)
-                })
-
+                .catch(error => console.error(error))
+                .finally(() => setLoadingReject(false));
         }
+
         if (response === 'Schedule') {
             setShowSchedulePopup(true);
-        } else if (response === 'CounterPrice') {
-            setShowCounterPricePopup(true);
+        }
 
-        } else {
-            onRespond(order.id, response);
+        if (response === 'CounterPrice') {
+            setShowCounterPricePopup(true);
         }
     };
 
@@ -68,54 +62,41 @@ const PendingOrderCard = ({ order, onRespond, onUpdate }) => {
     const handleScheduleSubmit = () => {
         if (scheduleDate && scheduleTime) {
             const data = { order_id: order._id, service_provider_date: scheduleDate, service_provider_time: scheduleTime };
-            setLoading(true)
+            setLoadingSchedule(true);
             axios.patch(`https://backend-qyb4mybn.b4a.run/order/time_update`, data)
                 .then(response => {
-                    onUpdate()
-                    console.log(response.data)
-                    setLoading(false)
+                    onUpdate();
+                    console.log(response.data);
                 })
-                .catch(error => {
-                    console.log(error)
-                })
+                .catch(error => console.error(error))
                 .finally(() => {
-                    setLoading(false)
-                })
-            setShowSchedulePopup(false);
+                    setLoadingSchedule(false);
+                    setShowSchedulePopup(false);
+                });
         } else {
             alert('Please select both date and time.');
         }
     };
 
+    // Handle counter price submit
     const handleCounterPriceSubmit = () => {
         if (counterPrice) {
-
-            console.log(counterPrice)
-            const data = {
-                order_id: order._id,
-                service_provider_price: counterPrice
-            }
-            setLoading(true)
+            const data = { order_id: order._id, service_provider_price: counterPrice };
+            setLoadingCounterPrice(true);
             axios.patch(`https://backend-qyb4mybn.b4a.run/order/counter_price_update`, data)
                 .then(response => {
-                    onUpdate()
-                    setLoading(false)
+                    onUpdate();
+                    console.log(response.data);
                 })
-                .catch(error => {
-                    console.log(error)
-                })
+                .catch(error => console.error(error))
                 .finally(() => {
-                    setLoading(false)
-                })
-            setShowCounterPricePopup(false);
+                    setLoadingCounterPrice(false);
+                    setShowCounterPricePopup(false);
+                });
         } else {
             alert('Please enter a counter price.');
         }
     };
-
-    if (loading) {
-        return <Loader />
-    }
 
     return (
         <div className="bg-white p-4 rounded-lg shadow-md mb-6 w-full max-w-sm sm:max-w-none hover:shadow-lg transition-shadow">
@@ -159,28 +140,50 @@ const PendingOrderCard = ({ order, onRespond, onUpdate }) => {
                 <div className="mt-4 flex flex-col sm:flex-row sm:flex-wrap gap-2 justify-center">
                     <button
                         onClick={() => handleResponse('Accept')}
-                        className="w-full sm:w-auto px-4 py-2 bg-custom-violet text-white rounded-lg"
+                        disabled={loadingAccept}
+                        className={`w-full sm:w-auto px-4 py-2 rounded-lg ${loadingAccept ? 'bg-gray-500' : 'bg-custom-violet'} text-white`}
                     >
-                        Accept
+                        {loadingAccept ? (
+                            <FontAwesomeIcon icon={faSpinner} spin className="w-5 h-5" />
+                        ) : (
+                            'Accept'
+                        )}
                     </button>
+
                     <button
                         onClick={() => handleResponse('Reject')}
-                        className="w-full sm:w-auto px-4 py-2 bg-red-500 text-white rounded-lg"
+                        disabled={loadingReject}
+                        className={`w-full sm:w-auto px-4 py-2 rounded-lg ${loadingReject ? 'bg-gray-500' : 'bg-red-500'} text-white`}
                     >
-                        Reject
+                        {loadingReject ? (
+                            <FontAwesomeIcon icon={faSpinner} spin className="w-5 h-5" />
+                        ) : (
+                            'Reject'
+                        )}
                     </button>
+
                     <button
                         onClick={() => handleResponse('Schedule')}
-                        className="w-full sm:w-auto px-4 py-2 bg-custom-blue text-white rounded-lg"
+                        disabled={loadingSchedule}
+                        className={`w-full sm:w-auto px-4 py-2 rounded-lg ${loadingSchedule ? 'bg-gray-500' : 'bg-custom-blue'} text-white`}
                     >
-                        Schedule
+                        {loadingSchedule ? (
+                            <FontAwesomeIcon icon={faSpinner} spin className="w-5 h-5" />
+                        ) : (
+                            'Schedule'
+                        )}
                     </button>
 
                     <button
                         onClick={() => handleResponse('CounterPrice')}
-                        className="w-full sm:w-auto px-4 py-2 bg-custom-cyan text-white rounded-lg"
+                        disabled={loadingCounterPrice}
+                        className={`w-full sm:w-auto px-4 py-2 rounded-lg ${loadingCounterPrice ? 'bg-gray-500' : 'bg-custom-cyan'} text-white`}
                     >
-                        Counter Price
+                        {loadingCounterPrice ? (
+                            <FontAwesomeIcon icon={faSpinner} spin className="w-5 h-5" />
+                        ) : (
+                            'Counter Price'
+                        )}
                     </button>
                 </div>}
 
@@ -199,15 +202,26 @@ const PendingOrderCard = ({ order, onRespond, onUpdate }) => {
                 <div className="mt-4 flex flex-col sm:flex-row sm:flex-wrap gap-2 justify-center">
                     <button
                         onClick={() => handleResponse('Accept')}
-                        className="w-full sm:w-auto px-4 py-2 bg-custom-violet text-white rounded-lg"
+                        disabled={loadingAccept}
+                        className={`w-full sm:w-auto px-4 py-2 rounded-lg ${loadingAccept ? 'bg-gray-500' : 'bg-custom-violet'} text-white`}
                     >
-                        Accept
+                        {loadingAccept ? (
+                            <FontAwesomeIcon icon={faSpinner} spin className="w-5 h-5" />
+                        ) : (
+                            'Accept'
+                        )}
                     </button>
+
                     <button
                         onClick={() => handleResponse('Reject')}
-                        className="w-full sm:w-auto px-4 py-2 bg-red-500 text-white rounded-lg"
+                        disabled={loadingReject}
+                        className={`w-full sm:w-auto px-4 py-2 rounded-lg ${loadingReject ? 'bg-gray-500' : 'bg-red-500'} text-white`}
                     >
-                        Reject
+                        {loadingReject ? (
+                            <FontAwesomeIcon icon={faSpinner} spin className="w-5 h-5" />
+                        ) : (
+                            'Reject'
+                        )}
                     </button>
                 </div>}
 
@@ -248,8 +262,13 @@ const PendingOrderCard = ({ order, onRespond, onUpdate }) => {
                             <button
                                 onClick={handleScheduleSubmit}
                                 className="px-4 py-2 bg-custom-blue text-white rounded-lg"
+                                disabled={loadingSchedule}
                             >
-                                Schedule
+                                {loadingSchedule ? (
+                                    <FontAwesomeIcon icon={faSpinner} spin className="w-5 h-5" />
+                                ) : (
+                                    'Schedule'
+                                )}
                             </button>
                         </div>
                     </div>
@@ -283,8 +302,13 @@ const PendingOrderCard = ({ order, onRespond, onUpdate }) => {
                             <button
                                 onClick={handleCounterPriceSubmit}
                                 className="px-4 py-2 bg-custom-cyan text-white rounded-lg"
+                                disabled={loadingCounterPrice}
                             >
-                                Submit Counter Price
+                                {loadingCounterPrice ? (
+                                    <FontAwesomeIcon icon={faSpinner} spin className="w-5 h-5" />
+                                ) : (
+                                    'Submit'
+                                )}
                             </button>
                         </div>
                     </div>

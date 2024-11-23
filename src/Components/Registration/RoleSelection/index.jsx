@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useLocation } from "react-router-dom";
+// import { useDispatch } from "react-redux";
 import { useDispatch } from "react-redux";
 import {
   signInStart,
@@ -24,7 +25,10 @@ const RoleSelection = () => {
     if (!selectedRole) return;
 
     setLoading(true); // Show loader on form submission
+
     // console.log(email);
+
+    console.log(email);
     dispatch(signInStart());
     try {
       // Make the POST request to the server
@@ -48,6 +52,7 @@ const RoleSelection = () => {
       } else {
         // console.log("Role selection successful:", data.data);
         dispatch(signInSuccess(data.data));
+
         if (data.data.user_type === "service provider") {
           navigate("/profile", { state: { user: data.data } });
         } else {

@@ -41,7 +41,7 @@ const Services = () => {
                 >
                     Manage Services
                 </Link>
-                <h2 className="text-xl font-semibold mb-4">Your Services</h2>
+                <h1 className="text-3xl font-semibold mb-4 mt-4 text-center">Your Services</h1>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mb-6">
                     {services.map(service => (
                         <ServiceCard

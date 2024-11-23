@@ -30,7 +30,7 @@ import BuyerDashboard from "./Components/Buyer Dashboard/BuyerDashboard";
 import StripePaymentPage from "./Components/StripeCheckout/Stripe";
 import SuccessPage from "./Components/StripeCheckout/SuccessPage";
 import CancelPage from "./Components/StripeCheckout/CancelPage";
-
+import AdminDashboard from "./Components/Admin Dashboard/AdminDashboard";
 import { useSelector } from "react-redux";
 import Analytics from "./Components/Service Provider Dashboard/Analytics";
 

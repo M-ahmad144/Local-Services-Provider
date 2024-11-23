@@ -1,28 +1,36 @@
 import React, { useState } from 'react';
+import axios from 'axios';
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-const Review = ({ freelancer, addReview }) => {
+const Review = ({ order_id, buyer_id }) => {
     const [rating, setRating] = useState(0);
     const [comment, setComment] = useState('');
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        if (rating && comment) {
-            const newReview = {
-                freelancerId: freelancer.id,
-                rating,
-                comment,
-                clientName: "John Doe",  // You can get this dynamically based on the logged-in client
-                timestamp: new Date().toISOString(),
-            };
-            addReview(newReview);
+
+        const reviewData = {
+            order_id,
+            buyer_id,
+            rating,
+            comment,
+        };
+
+        try {
+           const response= await axios.post('http://localhost:8080/review/addreview', reviewData); // Replace with your API endpoint
+           console.log(response.data);  
+           toast.success('Review submitted successfully!');
             setRating(0);
             setComment('');
+        } catch (error) {
+            toast.error('Failed to submit review. Please try again.');
         }
     };
 
     return (
         <div className="bg-white rounded-lg p-6 shadow-md">
-            <h3 className="text-xl font-semibold mb-4">Review {freelancer.name}</h3>
+            <h3 className="text-xl font-semibold mb-4">Review {  'Freelancer'}</h3>
             <form onSubmit={handleSubmit}>
                 <div className="mb-4">
                     <label className="block text-sm font-medium mb-2">Rating</label>
@@ -31,7 +39,9 @@ const Review = ({ freelancer, addReview }) => {
                             <button
                                 key={star}
                                 type="button"
-                                className={`w-8 h-8 text-lg ${star <= rating ? 'text-yellow-500' : 'text-gray-300'}`}
+                                className={`w-8 h-8 text-lg ${
+                                    star <= rating ? 'text-yellow-500' : 'text-gray-300'
+                                }`}
                                 onClick={() => setRating(star)}
                             >
                                 ★
@@ -54,10 +64,12 @@ const Review = ({ freelancer, addReview }) => {
                 <button
                     type="submit"
                     className="bg-indigo-500 hover:bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg"
+                    onClick={handleSubmit}
                 >
                     Submit Review
                 </button>
             </form>
+            <ToastContainer />
         </div>
     );
 };
