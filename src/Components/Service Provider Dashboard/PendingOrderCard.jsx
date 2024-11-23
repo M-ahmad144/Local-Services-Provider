@@ -9,7 +9,7 @@ const PendingOrderCard = ({ order, onRespond, onUpdate }) => {
     const { currentUser } = useSelector((state) => state.user);
     const user_id = currentUser._id;
     const user_type = currentUser.user_type
-
+    console.log(order)
     const [showSchedulePopup, setShowSchedulePopup] = useState(false);
     const [scheduleDate, setScheduleDate] = useState('');
     const [scheduleTime, setScheduleTime] = useState('');
@@ -100,7 +100,7 @@ const PendingOrderCard = ({ order, onRespond, onUpdate }) => {
 
     return (
         <div className="bg-white p-4 rounded-lg shadow-md mb-6 w-full max-w-sm sm:max-w-none hover:shadow-lg transition-shadow">
-            <p className="text-gray-600">{user_type == 'buyer' ? 'Service Provider' : 'Customer'}: {user_type == 'buyer' ? order.service_provider_id.name : order.buyer_id.name}</p>
+            <p className="text-gray-600">{user_type == 'buyer' ? 'Service Provider' : 'Customer'}: {user_type == 'buyer' ? order?.service_provider_id?.name : order?.buyer_id?.name}</p>
             <p className="text-gray-600">Description: {order.description}</p>
             <p className="text-gray-600">
                 Order Date: {new Date(order.order_date).toLocaleDateString('en-GB')}
