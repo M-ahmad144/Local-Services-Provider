@@ -69,7 +69,7 @@ const AccountSettings = () => {
               type="password"
               value={currentPassword}
               onChange={(e) => setCurrentPassword(e.target.value)}
-              className="border-gray-300 mt-2 p-2 md:p-3 border rounded-lg focus:ring focus:ring-blue-200 w-full focus:outline-none"
+              className="border-gray-300 p-3 border rounded-lg focus:ring-2 focus:ring-custom-violet w-full text-sm sm:text-base focus:outline-none pr-10"
               placeholder="Enter your current password"
               required
             />
@@ -84,7 +84,7 @@ const AccountSettings = () => {
               type="password"
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
-              className="border-gray-300 mt-2 p-2 md:p-3 border rounded-lg focus:ring focus:ring-blue-200 w-full focus:outline-none"
+              className="border-gray-300 p-3 border rounded-lg focus:ring-2 focus:ring-custom-violet w-full text-sm sm:text-base focus:outline-none pr-10"
               placeholder="Enter a new password"
               required
             />
@@ -99,7 +99,7 @@ const AccountSettings = () => {
               type="password"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
-              className="border-gray-300 mt-2 p-2 md:p-3 border rounded-lg focus:ring focus:ring-blue-200 w-full focus:outline-none"
+              className="border-gray-300 p-3 border rounded-lg focus:ring-2 focus:ring-custom-violet w-full text-sm sm:text-base focus:outline-none pr-10"
               placeholder="Confirm your new password"
               required
             />
@@ -109,7 +109,7 @@ const AccountSettings = () => {
           <div className="flex justify-center">
             <button
               type="submit"
-              className="bg-blue-600 hover:bg-blue-500 px-4 md:px-6 py-2 md:py-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 w-full max-w-xs font-semibold text-white focus:outline-none transition duration-300 ease-in-out"
+              className="bg-custom-violet hover:bg-violet-700 px-4 py-2 rounded-lg text-white transition duration-300"
             >
               Change Password
             </button>

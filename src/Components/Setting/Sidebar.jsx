@@ -34,7 +34,7 @@ const Sidebar = () => {
             <li key={item}>
               <Link
                 to={`/settings/${item}`}
-                className="flex items-center hover:bg-blue-100 p-3 rounded-lg text-gray-700 hover:text-blue-600 transition duration-300 ease-in-out"
+                className="flex items-center  hover:bg-gray-200 px-4 py-2 rounded-lg text-black transition duration-300"
                 onClick={() => setIsOpen(false)} // Close sidebar on link click (mobile)
               >
                 {/* Display icons based on the item */}
