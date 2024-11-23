@@ -10,6 +10,7 @@ import LanguagesSection from "../Profile/LanguagesSection";
 import AddressInformation from "../Profile/AddressInformation";
 import ProfileDescription from "../Profile/ProfileDescription";
 import axios from "axios";
+import ProfileHeader from "../Profile/ProfileHeader";
 
 const getUser = async (user_id) => {
   const response = await fetch(
