@@ -5,6 +5,7 @@ import AccountSettings from "../Setting/AccountSettings";
 import HelpSupport from "../Setting/HelpSupport";
 import Sidebar from "../Setting/Sidebar";
 import EditProfile from "../Profile/EditProfile";
+import FAQ from "../Setting/FAQSection";
 
 const SettingsRoutes = () => {
   return (
@@ -16,6 +17,7 @@ const SettingsRoutes = () => {
             <Route path="account" element={<AccountSettings />} />
             <Route path="editProfile" element={<EditProfile />} />
             <Route path="help" element={<HelpSupport />} />
+            <Route path="FAQ" element={<FAQ />} />
             <Route path="/" element={<AccountSettings />} />{" "}
           </Routes>
         </div>

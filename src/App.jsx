@@ -20,7 +20,6 @@ import ServiceProviderDashboard from "./Components/Service Provider Dashboard/Da
 import FreelancerProfile from "./Components/Review/FreelancerProfile";
 import ProfileRoutes from "./Components/Routes/ProfileRoutes";
 import SettingsRoutes from "./Components/Routes/SettingsRoutes";
-import EditProfile from "./Components/Profile/EditProfile";
 import ManageServices from "./Components/Service Provider Dashboard/ManageServices";
 import EditService from "./Components/Service Provider Dashboard/EditService";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -33,6 +32,7 @@ import CancelPage from "./Components/StripeCheckout/CancelPage";
 import AdminDashboard from "./Components/Admin Dashboard/AdminDashboard";
 import { useSelector } from "react-redux";
 import Analytics from "./Components/Service Provider Dashboard/Analytics";
+import Sidebar from "./Components/Setting/Sidebar";
 
 function App() {
   const queryClient = new QueryClient();
@@ -42,8 +42,11 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <Router>
         <Navbar />
+
         <Routes>
           <Route path="/" element={<LandingPage />} />
+          <Route path="/side" element={<Sidebar />} />
+
           <Route
             path="/OTP"
             element={currentUser ? <Navigate to="/" /> : <OTP />}
