@@ -1,15 +1,14 @@
-import React, { useRef } from "react"; // Import useRef
+import React from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useSelector } from "react-redux";
-import { toast, ToastContainer } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
 import { useLocation } from "react-router-dom";
 import Loader from "../loader";
-import ProfileHeader from "../Profile/ProfileHeader";
 import AboutSection from "../Profile/AboutSection";
 import SkillsSection from "../Profile/SkillsSection";
 import LanguagesSection from "../Profile/LanguagesSection";
-import LocationSection from "../Profile/LocationSection";
-import ServicesSection from "../Profile/ServicesSection";
+import AddressInformation from "../Profile/AddressInformation";
+import ProfileDescription from "../Profile/ProfileDescription";
 import axios from "axios";
 
 const getUser = async (user_id) => {
@@ -31,13 +30,12 @@ const getServices = async (user_id) => {
 
 const ProfileRoutes = () => {
   const { currentUser } = useSelector((state) => state.user);
-  console.log(currentUser)
-  const user_id = currentUser._id;
+  const user_id = currentUser?._id;
   const location = useLocation();
-  
-  const { updated , userId } = location.state || {};
-  
+
+  const { updated, userId } = location.state || {};
   const idToUse = userId || user_id;
+
   const {
     data: userData,
     error: userError,
@@ -64,6 +62,17 @@ const ProfileRoutes = () => {
     return <div>Error: {userError?.message || servicesError?.message}</div>;
   }
 
+  // Data Validation
+  const profileData = {
+    name: userData?.name || "No Name Provided",
+    email: userData?.email || "No Email Provided",
+    profile_image: userData?.profile_image || "",
+    about: userData?.profile_description || "No Description Provided",
+    skills: userData?.skills || [],
+    languages: userData?.language || [],
+    location: userData?.location || "No Address Provided",
+  };
+
   return (
     <>
       <ToastContainer />
@@ -71,18 +80,18 @@ const ProfileRoutes = () => {
         <div className="border-[#E1E4E8] bg-white shadow-lg mx-auto p-6 border rounded-lg max-w-4xl">
           <ProfileHeader
             data={{
-              name: userData.name,
-              email: userData.email,
-              profile_image: userData.profile_image,
+              name: profileData.name,
+              email: profileData.email,
+              profile_image: profileData.profile_image,
               updated: updated,
-              user_type:currentUser.user_type
+              user_type: currentUser.user_type,
             }}
           />
-          <AboutSection data={{ about: userData.profile_description }} />
-          <SkillsSection data={{ skills: userData.skills }} />
-          <LanguagesSection data={{ languages: userData.language }} />
-          <LocationSection data={{ location: userData.location }} />
-          <ServicesSection data={servicesData} />
+          <AboutSection data={{ about: profileData.about }} />
+          <SkillsSection data={{ skills: profileData.skills }} />
+          <LanguagesSection data={{ languages: profileData.languages }} />
+          <AddressInformation data={{ location: profileData.location }} />
+          <ProfileDescription data={{ description: profileData.about }} />
         </div>
       </div>
     </>

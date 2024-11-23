@@ -17,7 +17,6 @@ const SettingsRoutes = () => {
             <Route path="editProfile" element={<EditProfile />} />
             <Route path="help" element={<HelpSupport />} />
             <Route path="/" element={<AccountSettings />} />{" "}
-            {/* Default Route */}
           </Routes>
         </div>
       </div>

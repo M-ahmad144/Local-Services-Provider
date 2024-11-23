@@ -16,16 +16,15 @@ import Loader from "../loader/index";
 import { useSelector } from "react-redux";
 import dummyimg from "../../assets/dummy.png";
 
-
 const getUser = async (user_id) => {
-
-  const response = await fetch(`https://backend-qyb4mybn.b4a.run/profile/user/${user_id}`);
+  const response = await fetch(
+    `https://backend-qyb4mybn.b4a.run/profile/user/${user_id}`
+  );
   if (!response.ok) {
-    throw new Error('Network response was not ok');
+    throw new Error("Network response was not ok");
   }
   return response.json();
-
-}
+};
 
 const EditProfile = () => {
   const {
