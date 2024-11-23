@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useSelector } from "react-redux";
 import { ToastContainer, toast } from "react-toastify";
@@ -9,24 +9,17 @@ import SkillsSection from "../Profile/SkillsSection";
 import LanguagesSection from "../Profile/LanguagesSection";
 import AddressInformation from "../Profile/AddressInformation";
 import ProfileDescription from "../Profile/ProfileDescription";
-import axios from "axios";
 import ProfileHeader from "../Profile/ProfileHeader";
+import axios from "axios";
 
 const getUser = async (user_id) => {
   const response = await fetch(
     `https://backend-qyb4mybn.b4a.run/profile/user/${user_id}`
   );
   if (!response.ok) {
-    throw new Error("Network response was not ok");
+    throw new Error("Failed to fetch user data");
   }
   return response.json();
-};
-
-const getServices = async (user_id) => {
-  const response = await axios.get(
-    `https://backend-qyb4mybn.b4a.run/serviceProvider/get-user-services/${user_id}`
-  );
-  return response.data;
 };
 
 const ProfileRoutes = () => {
@@ -39,36 +32,41 @@ const ProfileRoutes = () => {
 
   const {
     data: userData,
-    error: userError,
-    isLoading: userLoading,
+    error,
+    isLoading,
   } = useQuery({
     queryKey: ["user", user_id],
     queryFn: () => getUser(idToUse),
   });
 
-  const {
-    data: servicesData,
-    error: servicesError,
-    isLoading: servicesLoading,
-  } = useQuery({
-    queryKey: ["services", user_id],
-    queryFn: () => getServices(idToUse),
-  });
+  useEffect(() => {
+    if (error) {
+      toast.error(`Error: ${error.message}`, {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
+  }, [error]);
 
-  if (userLoading || servicesLoading) {
+  if (isLoading) {
     return <Loader />;
   }
 
-  if (userError || servicesError) {
-    return <div>Error: {userError?.message || servicesError?.message}</div>;
+  if (error) {
+    return null;
   }
 
-  // Data Validation
   const profileData = {
     name: userData?.name || "No Name Provided",
     email: userData?.email || "No Email Provided",
     profile_image: userData?.profile_image || "",
-    about: userData?.profile_description || "No Description Provided",
+    profile_description:
+      userData?.profile_description || "No Description Provided",
     skills: userData?.skills || [],
     languages: userData?.language || [],
     location: userData?.location || "No Address Provided",
@@ -85,14 +83,16 @@ const ProfileRoutes = () => {
               email: profileData.email,
               profile_image: profileData.profile_image,
               updated: updated,
-              user_type: currentUser.user_type,
+              user_type: currentUser?.user_type || "User",
             }}
           />
-          <AboutSection data={{ about: profileData.about }} />
+          <AboutSection data={{ about: profileData.profile_description }} />
           <SkillsSection data={{ skills: profileData.skills }} />
           <LanguagesSection data={{ languages: profileData.languages }} />
           <AddressInformation data={{ location: profileData.location }} />
-          <ProfileDescription data={{ description: profileData.about }} />
+          <ProfileDescription
+            data={{ description: profileData.profile_description }}
+          />
         </div>
       </div>
     </>
