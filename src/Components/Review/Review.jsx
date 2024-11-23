@@ -3,7 +3,7 @@ import axios from 'axios';
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-const Review = ({ order_id, buyer_id, freelancer }) => {
+const Review = ({ order_id, buyer_id }) => {
     const [rating, setRating] = useState(0);
     const [comment, setComment] = useState('');
 
@@ -18,8 +18,9 @@ const Review = ({ order_id, buyer_id, freelancer }) => {
         };
 
         try {
-            await axios.post('http://localhost:8080/review/addreview', reviewData); // Replace with your API endpoint
-            toast.success('Review submitted successfully!');
+           const response= await axios.post('http://localhost:8080/review/addreview', reviewData); // Replace with your API endpoint
+           console.log(response.data);  
+           toast.success('Review submitted successfully!');
             setRating(0);
             setComment('');
         } catch (error) {
@@ -29,7 +30,7 @@ const Review = ({ order_id, buyer_id, freelancer }) => {
 
     return (
         <div className="bg-white rounded-lg p-6 shadow-md">
-            <h3 className="text-xl font-semibold mb-4">Review {freelancer?.name || 'Freelancer'}</h3>
+            <h3 className="text-xl font-semibold mb-4">Review {  'Freelancer'}</h3>
             <form onSubmit={handleSubmit}>
                 <div className="mb-4">
                     <label className="block text-sm font-medium mb-2">Rating</label>
@@ -63,6 +64,7 @@ const Review = ({ order_id, buyer_id, freelancer }) => {
                 <button
                     type="submit"
                     className="bg-indigo-500 hover:bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg"
+                    onClick={handleSubmit}
                 >
                     Submit Review
                 </button>
