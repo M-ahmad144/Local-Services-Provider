@@ -103,7 +103,14 @@ const FreelancerProfile = () => {
                     )}
                 </div>
 
-                <Review order_id={order_id} buyer_id={buyer_id} addReview={addReview} />
+                <Review 
+  order_id={order_id} 
+  buyer_id={buyer_id} 
+  addReview={addReview} 
+  loading={loading} 
+  setLoading={setLoading} 
+/>
+
             </div>
         </div>
     );

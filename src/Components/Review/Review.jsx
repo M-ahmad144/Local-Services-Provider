@@ -3,8 +3,9 @@ import axios from 'axios';
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useSelector } from "react-redux";
+import { set } from 'react-hook-form';
 
-const Review = ({ order_id, buyer_id ,addReview}) => {
+const Review = ({ order_id, buyer_id ,addReview , loading, setLoading}) => {
     const { currentUser } = useSelector((state) => state.user);
     const [rating, setRating] = useState(0);
     const [comment, setComment] = useState('');
@@ -20,11 +21,16 @@ const Review = ({ order_id, buyer_id ,addReview}) => {
         };
 
         try {
+            setLoading(true);
            const response= await axios.post('https://backend-qyb4mybn.b4a.run/review/addreview', reviewData); // Replace with your API endpoint
            console.log(response.data);  
-           toast.success('Review submitted successfully!');
+           
             setRating(0);
             setComment('');
+            setLoading(false);
+           
+           
+            toast.success('Review submitted successfully!'); //add review
             //add review
          // Reload the page to reflect the new review
         setTimeout(() => {
