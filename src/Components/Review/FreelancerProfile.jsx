@@ -4,6 +4,7 @@ import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
 import axios from 'axios';
+import { set } from 'react-hook-form';
 
 
 const FreelancerProfile = () => {
@@ -19,10 +20,11 @@ const FreelancerProfile = () => {
         name: serviceprovider_name,
         description: description,
         image: 'https://via.placeholder.com/80',
-        reviews: [
-            { buyer_name: "John Smith", rating: 5, review_text: "Great job!", created_at: "2024-09-01T14:00:00Z" },
-            { buyer_name: "Alice Brown", rating: 4, review_text: "Good work but could improve communication.", created_at: "2024-09-02T10:00:00Z" }
-        ]
+        reviews: []
+        // reviews: [
+        //     { buyer_name: "John Smith", rating: 5, review_text: "Great job!", created_at: "2024-09-01T14:00:00Z" },
+        //     { buyer_name: "Alice Brown", rating: 4, review_text: "Good work but could improve communication.", created_at: "2024-09-02T10:00:00Z" }
+        // ]
     };
     // use Effect to get the freelancer data
     useEffect(() => {
@@ -38,6 +40,7 @@ const FreelancerProfile = () => {
             //   now set values in freelancer
 
             freelancer.reviews = response.data.reviews;
+            setReviews(freelancer.reviews);
 
                 setServiceprovider_name(response.data.serviceprovider_name);
                 setDescription(response.data.description);
@@ -63,7 +66,7 @@ const FreelancerProfile = () => {
     //         { clientName: "Alice Brown", rating: 4, comment: "Good work but could improve communication.", timestamp: "2024-09-02T10:00:00Z" }
     //     ]
     // };
-    const [reviews, setReviews] = useState(freelancer.reviews);
+    const [reviews, setReviews] = useState([]);
 
     const addReview = (newReview) => {
         setReviews([...reviews, newReview]);
