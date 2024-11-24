@@ -4,7 +4,7 @@ import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
 import axios from 'axios';
-import { set } from 'react-hook-form';
+// import { set } from 'react-hook-form';
 
 
 const FreelancerProfile = () => {
@@ -12,8 +12,8 @@ const FreelancerProfile = () => {
     const location = useLocation();
     const { order_id, buyer_id } = location.state || {};
     const { currentUser } = useSelector((state) => state.user);
-    // const [serviceprovider_name, setServiceprovider_name] = useState('');
-    // const [description, setDescription] = useState('');
+    const [serviceprovider_name, setServiceprovider_name] = useState('');
+    const [description, setDescription] = useState('');
 
     const freelancer = {
     
@@ -54,9 +54,7 @@ const FreelancerProfile = () => {
     }, []);
 
     const [reviews, setReviews] = useState([]);
-    const [serviceprovider_name, setServiceprovider_name] = useState('');
-    const [description, setDescription] = useState('');
-
+    
     const addReview = (newReview) => {
         setReviews([...reviews, newReview]);
     };
