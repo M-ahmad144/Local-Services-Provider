@@ -26,14 +26,11 @@ const Review = ({ order_id, buyer_id ,addReview}) => {
             setRating(0);
             setComment('');
             //add review
-            addReview(
-                {
-                    buyer_name: currentUser.name,
-                    rating,
-                    review_text: comment,
-                    created_at: new Date().toISOString(),
-                }
-            );
+         // Reload the page to reflect the new review
+        setTimeout(() => {
+            window.location.reload();
+        }, 1000); // Wait for the toast to appear before reloading
+
         } catch (error) {
             toast.error('Failed to submit review. Please try again.');
         }
