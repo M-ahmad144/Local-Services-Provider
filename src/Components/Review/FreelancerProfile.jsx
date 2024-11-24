@@ -1,118 +1,86 @@
-import React, { useState , useEffect } from 'react';
-import Review from './Review';
-import { useDispatch } from "react-redux";
-import { useSelector } from "react-redux";
-import { useLocation } from "react-router-dom";
+import React, { useState } from 'react';
 import axios from 'axios';
-import { set } from 'react-hook-form';
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
+const Review = ({ order_id, buyer_id, addReview }) => {
+    const [rating, setRating] = useState(0);
+    const [comment, setComment] = useState('');
 
-const FreelancerProfile = () => {
-    const dispatch = useDispatch();
-    const location = useLocation();
-    const { order_id, buyer_id } = location.state || {};
-    const { currentUser } = useSelector((state) => state.user);
-    const [serviceprovider_name, setServiceprovider_name] = useState('robasa');
-    const [description, setDescription] = useState('atif');
+    const handleSubmit = async (e) => {
+        e.preventDefault();
 
-    const freelancer = {
-    
-        name: serviceprovider_name,
-        description: description,
-        image: 'https://via.placeholder.com/80',
-        reviews: []
-        // reviews: [
-        //     { buyer_name: "John Smith", rating: 5, review_text: "Great job!", created_at: "2024-09-01T14:00:00Z" },
-        //     { buyer_name: "Alice Brown", rating: 4, review_text: "Good work but could improve communication.", created_at: "2024-09-02T10:00:00Z" }
-        // ]
-    };
-    // use Effect to get the freelancer data
-    useEffect(() => {
-
-        const getFreelancerData = async () => {
-            try {
-              const response = await axios.post("http://localhost:8080/review/reviewdata", {
-                order_id,
-                buyer_id,
-              });
-              
-              console.log('Freelancer data:', response.data);
-            //   now set values in freelancer
-
-            freelancer.reviews = response.data.reviews;
-            setReviews(freelancer.reviews);
-
-                setServiceprovider_name(response.data.service_provider.name);
-                setDescription(response.data.description);
-            } catch (error) {
-                console.error('Error fetching freelancer data:', error);
-            }
+        const reviewData = {
+            order_id,
+            buyer_id,
+            rating,
+            review_text: comment, // Ensure consistent field naming
         };
-        getFreelancerData();
 
+        try {
+            const response = await axios.post('http://localhost:8080/review/addreview', reviewData);
 
-    }, []);
+            console.log('Review added:', response.data);
 
+            // Call the parent addReview function to update the state
+            addReview({
+                ...reviewData,
+                created_at: new Date().toISOString(), // Add created_at manually for UI
+                buyer_name: 'You', // Placeholder, replace with actual buyer name
+            });
 
-
-
-    // const freelancer = {
-    //     id: 1,
-    //     name: serviceprovider_name,
-    //     description: description,
-    //     image: 'https://via.placeholder.com/80',
-    //     reviews: [
-    //         { clientName: "John Smith", rating: 5, comment: "Great job!", timestamp: "2024-09-01T14:00:00Z" },
-    //         { clientName: "Alice Brown", rating: 4, comment: "Good work but could improve communication.", timestamp: "2024-09-02T10:00:00Z" }
-    //     ]
-    // };
-    const [reviews, setReviews] = useState([]);
-
-    const addReview = (newReview) => {
-        setReviews([...reviews, newReview]);
+            toast.success('Review submitted successfully!');
+            setRating(0);
+            setComment('');
+        } catch (error) {
+            console.error('Error submitting review:', error);
+            toast.error('Failed to submit review. Please try again.');
+        }
     };
 
     return (
-        <div className="container mx-auto px-4 mt-3">
-            <div className="bg-white rounded-lg p-6 shadow-md">
-                <div className="flex items-center mb-6">
-                    {/* Freelancer Display Picture */}
-                    <img
-                        src={'https://via.placeholder.com/80'}
-                        alt={`${freelancer.name} profile`}
-                        className="w-20 h-20 rounded-full object-cover mr-4"
-                    />
-                    <div>
-                        <h2 className="text-2xl font-bold">{serviceprovider_name}</h2>
-                        <p>{description}</p>
+        <div className="bg-white rounded-lg p-6 shadow-md">
+            <h3 className="text-xl font-semibold mb-4">Review Freelancer</h3>
+            <form onSubmit={handleSubmit}>
+                <div className="mb-4">
+                    <label className="block text-sm font-medium mb-2">Rating</label>
+                    <div className="flex space-x-2">
+                        {[1, 2, 3, 4, 5].map((star) => (
+                            <button
+                                key={star}
+                                type="button"
+                                className={`w-8 h-8 text-lg ${
+                                    star <= rating ? 'text-yellow-500' : 'text-gray-300'
+                                }`}
+                                onClick={() => setRating(star)}
+                            >
+                                ★
+                            </button>
+                        ))}
                     </div>
                 </div>
 
-                <h3 className="text-xl font-semibold mt-6 mb-2">Reviews</h3>
-                <div className="space-y-4">
-                    {reviews.length ? (
-                        reviews.map((review, index) => (
-                            <div key={index} className="p-4 border rounded-lg bg-gray-50">
-                                <div className="flex justify-between items-center mb-2">
-                                    <div className="text-sm font-bold">{review.buyer_name}</div>
-                                    <div className="text-sm text-gray-500">{new Date(review.created_at).toLocaleDateString()}</div>
-                                </div>
-                                <div className="text-yellow-500">
-                                    {Array(review.rating).fill('★').join('')}
-                                    {Array(5 - review.rating).fill('☆').join('')}
-                                </div>
-                                <p>{review.review_text}</p>
-                            </div>
-                        ))
-                    ) : (
-                        <p>No reviews yet.</p>
-                    )}
+                <div className="mb-4">
+                    <label className="block text-sm font-medium mb-2">Comment</label>
+                    <textarea
+                        className="w-full p-2 border rounded-lg"
+                        rows="4"
+                        placeholder="Write your review here..."
+                        value={comment}
+                        onChange={(e) => setComment(e.target.value)}
+                    />
                 </div>
 
-                <Review order_id={order_id} buyer_id={buyer_id} />
-            </div>
+                <button
+                    type="submit"
+                    className="bg-indigo-500 hover:bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg"
+                >
+                    Submit Review
+                </button>
+            </form>
+            <ToastContainer />
         </div>
     );
 };
 
-export default FreelancerProfile;
+export default Review;
