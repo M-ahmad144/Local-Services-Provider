@@ -31,7 +31,7 @@ const Review = ({ order_id, buyer_id ,addReview , loading, setLoading}) => {
            const newReview={
             buyer_name:currentUser.name,
             rating,
-            reviewtext:comment,
+            review_text:comment,
             created_at: new Date().toISOString()
 
            }
