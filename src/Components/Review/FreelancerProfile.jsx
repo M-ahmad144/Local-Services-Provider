@@ -4,6 +4,7 @@ import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
 import axios from 'axios';
+import { set } from 'react-hook-form';
 
 const FreelancerProfile = () => {
     const dispatch = useDispatch();
@@ -12,6 +13,8 @@ const FreelancerProfile = () => {
     const { currentUser } = useSelector((state) => state.user);
     const [freelancerData, setFreelancerData] = useState(null);
     const [reviews, setReviews] = useState([]);
+    const [name, setName] = useState('');
+    const [description, setDescription] = useState('');
 
     // Fetch freelancer data on component mount
     useEffect(() => {
@@ -24,6 +27,8 @@ const FreelancerProfile = () => {
 
                 console.log('Freelancer data:', response.data);
                 setFreelancerData(response.data);
+                setName(response.data.serviceprovider_name);
+                setDescription(response.data.description);
                 if (response.data.reviews) {
                     setReviews(response.data.reviews);
                 }
@@ -52,8 +57,8 @@ const FreelancerProfile = () => {
                                 className="w-20 h-20 rounded-full object-cover mr-4"
                             />
                             <div>
-                                <h2 className="text-2xl font-bold">{freelancerData.serviceprovider_name}</h2>
-                                <p>{freelancerData.description || 'No description available.'}</p>
+                                <h2 className="text-2xl font-bold">{name}</h2>
+                                <p>{description || 'No description available.'}</p>
                             </div>
                         </div>
 
