@@ -28,9 +28,12 @@ const FreelancerProfile = () => {
                 setServiceProviderName(service_provider_name || 'N/A');
                 setDescription(description || 'No description available.');
                 setReviews(reviews || []);
-                setLoading(false);
+                
             } catch (error) {
                 console.error('Error fetching freelancer data:', error);
+                setLoading(false);
+            }
+            finally {
                 setLoading(false);
             }
         };
