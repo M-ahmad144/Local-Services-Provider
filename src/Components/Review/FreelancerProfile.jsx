@@ -3,11 +3,14 @@ import Review from './Review';
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
+import Loader from '../loader/index';
 import axios from 'axios';
+import { set } from 'react-hook-form';
 // import { set } from 'react-hook-form';
 
 
 const FreelancerProfile = () => {
+    const [loading, setLoading] = useState(false);
     const dispatch = useDispatch();
     const location = useLocation();
     const { order_id, buyer_id } = location.state || {};
@@ -30,7 +33,9 @@ const FreelancerProfile = () => {
     useEffect(() => {
 
         const getFreelancerData = async () => {
+
             try {
+                setLoading(true);
               const response = await axios.post("https://backend-qyb4mybn.b4a.run/review/reviewdata", {
                 order_id,
                 buyer_id,
@@ -44,6 +49,7 @@ const FreelancerProfile = () => {
 
                 setServiceprovider_name(response.data.service_provider_name);
                 setDescription(response.data.description);
+                setLoading(false);
             } catch (error) {
                 console.error('Error fetching freelancer data:', error);
             }
@@ -61,6 +67,7 @@ const FreelancerProfile = () => {
 
     return (
         <div className="container mx-auto px-4 mt-3">
+            {loading && <Loader />}
             <div className="bg-white rounded-lg p-6 shadow-md">
                 <div className="flex items-center mb-6">
                     {/* Freelancer Display Picture */}
