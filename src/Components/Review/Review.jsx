@@ -2,8 +2,10 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useSelector } from "react-redux";
 
-const Review = ({ order_id, buyer_id }) => {
+const Review = ({ order_id, buyer_id ,addReview}) => {
+    const { currentUser } = useSelector((state) => state.user);
     const [rating, setRating] = useState(0);
     const [comment, setComment] = useState('');
 
@@ -23,6 +25,15 @@ const Review = ({ order_id, buyer_id }) => {
            toast.success('Review submitted successfully!');
             setRating(0);
             setComment('');
+            //add review
+            addReview(
+                {
+                    buyer_name: currentUser.name,
+                    rating,
+                    review_text: comment,
+                    created_at: new Date().toISOString(),
+                }
+            );
         } catch (error) {
             toast.error('Failed to submit review. Please try again.');
         }

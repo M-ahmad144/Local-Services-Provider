@@ -96,7 +96,7 @@ const FreelancerProfile = () => {
                     )}
                 </div>
 
-                <Review order_id={order_id} buyer_id={buyer_id} />
+                <Review order_id={order_id} buyer_id={buyer_id} addReview={addReview} />
             </div>
         </div>
     );
