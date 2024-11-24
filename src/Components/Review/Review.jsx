@@ -4,8 +4,11 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useSelector } from "react-redux";
 import { set } from 'react-hook-form';
+import { Navigate, useNavigate } from 'react-router-dom';
 
 const Review = ({ order_id, buyer_id ,addReview , loading, setLoading}) => {
+    //naviate
+    const navigate = useNavigate();
     const { currentUser } = useSelector((state) => state.user);
     const [rating, setRating] = useState(0);
     const [comment, setComment] = useState('');
@@ -36,8 +39,9 @@ const Review = ({ order_id, buyer_id ,addReview , loading, setLoading}) => {
 
            }
               addReview(newReview);
-           
-            toast.success('Review submitted successfully!'); //add review
+
+           useNavigate('/client-dashboard');
+            // toast.success('Review submitted successfully!'); //add review
             //add review
          // Reload the page to reflect the new review
         // setTimeout(() => {
