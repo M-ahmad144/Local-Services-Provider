@@ -18,7 +18,7 @@ const Review = ({ order_id, buyer_id }) => {
         };
 
         try {
-           const response= await axios.post('http://localhost:8080/review/addreview', reviewData); // Replace with your API endpoint
+           const response= await axios.post('https://backend-qyb4mybn.b4a.run/review/addreview', reviewData); // Replace with your API endpoint
            console.log(response.data);  
            toast.success('Review submitted successfully!');
             setRating(0);

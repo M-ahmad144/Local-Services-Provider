@@ -31,7 +31,7 @@ const FreelancerProfile = () => {
 
         const getFreelancerData = async () => {
             try {
-              const response = await axios.post("http://localhost:8080/review/reviewdata", {
+              const response = await axios.post("https://backend-qyb4mybn.b4a.run/review/reviewdata", {
                 order_id,
                 buyer_id,
               });
