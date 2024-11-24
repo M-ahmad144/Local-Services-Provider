@@ -12,8 +12,8 @@ const FreelancerProfile = () => {
     const location = useLocation();
     const { order_id, buyer_id } = location.state || {};
     const { currentUser } = useSelector((state) => state.user);
-    const [serviceprovider_name, setServiceprovider_name] = useState('robasa');
-    const [description, setDescription] = useState('atif');
+    // const [serviceprovider_name, setServiceprovider_name] = useState('');
+    // const [description, setDescription] = useState('');
 
     const freelancer = {
     
@@ -39,10 +39,10 @@ const FreelancerProfile = () => {
               console.log('Freelancer data:', response.data);
             //   now set values in freelancer
 
-            freelancer.reviews = response.data.reviews;
-            setReviews(freelancer.reviews);
+                freelancer.reviews = response.data.reviews;
+                setReviews(freelancer.reviews);
 
-                setServiceprovider_name(response.data.service_provider.name);
+                setServiceprovider_name(response.data.service_provider_name);
                 setDescription(response.data.description);
             } catch (error) {
                 console.error('Error fetching freelancer data:', error);
@@ -54,6 +54,8 @@ const FreelancerProfile = () => {
     }, []);
 
     const [reviews, setReviews] = useState([]);
+    const [serviceprovider_name, setServiceprovider_name] = useState('');
+    const [description, setDescription] = useState('');
 
     const addReview = (newReview) => {
         setReviews([...reviews, newReview]);
@@ -66,7 +68,7 @@ const FreelancerProfile = () => {
                     {/* Freelancer Display Picture */}
                     <img
                         src={'https://via.placeholder.com/80'}
-                        alt={`${freelancer.name} profile`}
+                        alt={`${freelancer.serviceprovider_name} profile`}
                         className="w-20 h-20 rounded-full object-cover mr-4"
                     />
                     <div>
