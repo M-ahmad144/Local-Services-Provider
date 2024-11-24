@@ -21,21 +21,28 @@ const Review = ({ order_id, buyer_id ,addReview , loading, setLoading}) => {
         };
 
         try {
-            setLoading(true);
+            // setLoading(true);
            const response= await axios.post('https://backend-qyb4mybn.b4a.run/review/addreview', reviewData); // Replace with your API endpoint
            console.log(response.data);  
            
             setRating(0);
             setComment('');
-            setLoading(false);
-           
+            // setLoading(false);
+           const newReview={
+            buyer_name:currentUser.name,
+            rating,
+            reviewtext:comment,
+            created_at: new Date().toISOString()
+
+           }
+              addReview(newReview);
            
             toast.success('Review submitted successfully!'); //add review
             //add review
          // Reload the page to reflect the new review
-        setTimeout(() => {
-            window.location.reload();
-        }, 1000); // Wait for the toast to appear before reloading
+        // setTimeout(() => {
+        //     window.location.reload();
+        // }, 0); // Wait for the toast to appear before reloading
 
         } catch (error) {
             toast.error('Failed to submit review. Please try again.');
