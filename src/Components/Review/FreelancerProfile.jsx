@@ -12,8 +12,8 @@ const FreelancerProfile = () => {
     const location = useLocation();
     const { order_id, buyer_id } = location.state || {};
     const { currentUser } = useSelector((state) => state.user);
-    const [serviceprovider_name, setServiceprovider_name] = useState('');
-    const [description, setDescription] = useState('');
+    const [serviceprovider_name, setServiceprovider_name] = useState('robasa');
+    const [description, setDescription] = useState('atif');
 
     const freelancer = {
     
@@ -42,7 +42,7 @@ const FreelancerProfile = () => {
             freelancer.reviews = response.data.reviews;
             setReviews(freelancer.reviews);
 
-                setServiceprovider_name(response.data.serviceprovider_name);
+                setServiceprovider_name(response.data.service_provider.name);
                 setDescription(response.data.description);
             } catch (error) {
                 console.error('Error fetching freelancer data:', error);
