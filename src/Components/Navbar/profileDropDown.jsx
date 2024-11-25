@@ -21,7 +21,6 @@ const ProfileDropdown = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [onlineStatus, setOnlineStatus] = useState(true);
   const [userData, setUserData] = useState(null); // Store user data
-
   const toggleDropdown = () => {
     setDropdownOpen((prev) => !prev);
   };
@@ -137,22 +136,16 @@ const ProfileDropdown = () => {
               <FaUser className="mr-2" />
               Profile
             </Link>
-            <Link
-              to="/analytics"
-              className="flex items-center hover:bg-gray-200 p-2 text-gray-700 transition duration-300"
-              onClick={() => setDropdownOpen(false)}
-            >
-              <FaChartLine className="mr-2" />
-              Analytics
-            </Link>
-            <Link
-              to="/billing"
-              className="flex items-center hover:bg-gray-200 p-2 text-gray-700 transition duration-300"
-              onClick={() => setDropdownOpen(false)}
-            >
-              <FaDollarSign className="mr-2" />
-              Billing
-            </Link>
+            {userData.user_type == "service provider" && (
+              <Link
+                to="/analytics"
+                className="flex items-center hover:bg-gray-200 p-2 text-gray-700 transition duration-300"
+                onClick={() => setDropdownOpen(false)}
+              >
+                <FaChartLine className="mr-2" />
+                Analytics
+              </Link>
+            )}
             <Link
               to="/settings"
               className="flex items-center hover:bg-gray-200 p-2 text-gray-700 transition duration-300"
