@@ -118,7 +118,9 @@ const Navbar = () => {
 
       {/* Right Side - Icons and Profile */}
       <div className="flex items-center space-x-4">
-        <FaQuestionCircle className="w-5 h-5 text-gray-600 hover:text-indigo-600 cursor-pointer" />
+        <Link to="/settings/FAQ">
+            <FaQuestionCircle className="w-5 h-5 text-gray-600 hover:text-indigo-600 cursor-pointer" />
+        </Link>
         {userRole === "buyer" && (
           <Link to="/services">
             <FaTh className="w-5 h-5 text-gray-600 hover:text-indigo-600 cursor-pointer" />

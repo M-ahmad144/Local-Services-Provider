@@ -62,7 +62,7 @@ const FAQ = () => {
         {faqs.map((faq, index) => (
           <div
             key={index}
-            className="bg-gradient-to-r from-blue-500 via-blue-600 to-purple-600 shadow-lg p-6 rounded-xl transform transition-transform hover:scale-105"
+            className="bg-custom-violet shadow-lg p-6 rounded-xl transform transition-transform hover:scale-105"
           >
             <div
               className="flex justify-between items-center text-white cursor-pointer"

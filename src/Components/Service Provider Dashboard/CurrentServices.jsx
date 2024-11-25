@@ -3,7 +3,6 @@ import { useQuery } from '@tanstack/react-query';
 import ServiceCard from './ServiceCard';
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import Loader from '../loader/index';
 
 const fetchUserServices = async (userId) => {
     const response = await fetch(`https://backend-qyb4mybn.b4a.run/serviceProvider/get-user-services/${userId}`);
@@ -27,7 +26,7 @@ const Services = () => {
     });
 
     if (isLoading) {
-        return <Loader />;
+        return <div>Loading...</div>;
     }
 
     if (error) {
@@ -42,7 +41,7 @@ const Services = () => {
                 >
                     Manage Services
                 </Link>
-                <h1 className="text-3xl font-semibold mb-4 mt-4">Your Services</h1>
+                <h1 className="text-3xl font-semibold mb-4 mt-4 text-center">Your Services</h1>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mb-6">
                     {services.map(service => (
                         <ServiceCard
