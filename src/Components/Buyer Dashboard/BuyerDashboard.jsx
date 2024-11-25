@@ -32,6 +32,13 @@ const getDisputed = async (user_id, user_type) => {
   return response.data;
 };
 
+const getCompletedOrders = async (user_id) => {
+  const response = await axios.get(`https://backend-qyb4mybn.b4a.run/order/completed?service_provider_id=${user_id}`);
+  return response.data;
+};
+
+
+
 const BuyerDashboard = () => {
   const { currentUser } = useSelector((state) => state.user);
   const [reload, setReload] = useState(false);
@@ -72,6 +79,13 @@ const BuyerDashboard = () => {
     cacheTime: 0,
   });
 
+  const { data: completedOrders, error: completedOrdersError, isLoading: completedOrdersLoading, refetch: refetchcompletedOrders } = useQuery({
+    queryKey: ['completed_orders', user_id],
+    queryFn: () => getCompletedOrders(user_id),
+    staleTime: 0,
+    cacheTime: 0,
+  });
+
   const UpdateReload = async () => {
     setLoading(true);
     console.log("Triggering refetch and re-render...");
@@ -88,15 +102,15 @@ const BuyerDashboard = () => {
   };
 
   // Show loader while fetching
-  if (pendingOrdersLoading || in_progressOrdersLoading || disputedOrdersLoading || loading) {
+  if (pendingOrdersLoading || in_progressOrdersLoading || disputedOrdersLoading || loading || completedOrdersLoading) {
     return <Loader />;
   }
 
 
 
   // Show error if there is one
-  if (pendingOrdersError || in_progressOrdersError || disputedOrdersError) {
-    return <div>Error: {pendingOrdersError?.message || in_progressOrdersError?.message || disputedOrdersError?.message}</div>;
+  if (pendingOrdersError || in_progressOrdersError || disputedOrdersError || completedOrdersError) {
+    return <div>Error: {pendingOrdersError?.message || in_progressOrdersError?.message || disputedOrdersError?.message || completedOrdersError?.message}</div>;
   }
 
   return (
@@ -119,7 +133,7 @@ const BuyerDashboard = () => {
           <DisputedOrders
             in_DisputedOrders={disputedOrders}
             key={`disputed-orders-${reload}`}
-            user = {user_type}
+            user={user_type}
             onUpdate={UpdateReload}
           />
           <PendingOrders
@@ -127,7 +141,10 @@ const BuyerDashboard = () => {
             onUpdate={UpdateReload}
             key={`pending-orders-${reload}`} // Unique key to force re-render
           />
-          <CompletedOrders key={`completed-orders-${reload}`} />
+          <CompletedOrders
+            completedOrders={completedOrders}
+            key={`completed-orders-${reload}`}
+          />
         </div>
       </div>
     </div>

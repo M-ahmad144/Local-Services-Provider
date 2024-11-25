@@ -29,6 +29,11 @@ const getDisputed = async (user_id, user_type) => {
     return response.data;
 };
 
+const getCompletedOrders = async (user_id) => {
+    const response = await axios.get(`https://backend-qyb4mybn.b4a.run/order/completed?service_provider_id=${user_id}`);
+    return response.data;
+};
+
 const ServiceProviderDashboard = () => {
     const [reload, setReload] = useState(false); // State to trigger re-render
     const [loading , setLoading] = useState(false)
@@ -58,6 +63,14 @@ const ServiceProviderDashboard = () => {
         staleTime: 0,
         cacheTime: 0,
     });
+
+    const { data: completedOrders, error: completedOrdersError, isLoading: completedOrdersLoading, refetch: refetchcompletedOrders } = useQuery({
+        queryKey: ['completed_orders', user_id],
+        queryFn: () => getCompletedOrders(user_id),
+        staleTime: 0,
+        cacheTime: 0,
+    });
+
     
     const UpdateReload = async () => {
         setLoading(true);
@@ -66,6 +79,8 @@ const ServiceProviderDashboard = () => {
         const { data: updatedPendingOrders } = await refetchPendingOrders();
         const { data: updatedInProgressOrders } = await refetchInProgressOrders();
         const { data: updatedDisputedOrders } = await refetchDisputedOrders();
+        const { data: updatedCompleted } = await refetchcompletedOrders();
+
 
         
         console.log('Updated pendingOrders:', updatedPendingOrders);
@@ -78,15 +93,15 @@ const ServiceProviderDashboard = () => {
     
 
 
-    if (pendingOrdersLoading || in_progressOrdersLoading || disputedOrdersLoading || loading) {
+    if (pendingOrdersLoading || in_progressOrdersLoading || disputedOrdersLoading || loading || completedOrdersLoading) {
         return <Loader />;
     } 
     
     
 
     // Show error if there is one
-    if (pendingOrdersError || in_progressOrdersError || disputedOrdersError) {
-        return <div>Error: {pendingOrdersError?.message || in_progressOrdersError?.message || disputedOrdersError?.message}</div>;
+    if (pendingOrdersError || in_progressOrdersError || disputedOrdersError || completedOrdersError) {
+        return <div>Error: {pendingOrdersError?.message || in_progressOrdersError?.message || disputedOrdersError?.message || completedOrdersError?.message}</div>;
     }
 
     return (
@@ -124,7 +139,10 @@ const ServiceProviderDashboard = () => {
                         key={`pending-orders-${reload}`} // Unique key for PendingOrders
                     />
                     
-                    <CompletedOrders key={`completed-orders-${reload}`} />
+                    <CompletedOrders 
+                        completedOrders = {completedOrders}
+                        key={`completed-orders-${reload}`} 
+                    />
                 </div>
             </div>
         </div>

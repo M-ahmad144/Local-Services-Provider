@@ -33,7 +33,7 @@ const ServicesCard = ({
                 {title} {/* Title from props */}
             </h3>
             <div className="text-sm mb-2 flex items-center">
-                <span className="text-gray-400 text-xl mr-1">★</span> {/* Single star */}
+                <span className="text-yellow-400 text-xl mr-1">★</span> {/* Single star */}
                 <span className="mr-2">{rating}</span> {/* Rating value */}
                 <span className="text-gray-500">({numberOfRatings} ratings)</span> {/* Number of ratings */}
             </div>

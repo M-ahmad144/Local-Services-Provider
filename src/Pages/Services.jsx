@@ -58,6 +58,7 @@ const Services = () => {
     const handleCardClick = (service) => {
         navigate(`/service-details/${service._id}`, { state: { service } });
     };
+    console.log(servicesData)
 
     return (
         <>
@@ -76,8 +77,8 @@ const Services = () => {
                                     price={service.price}
                                     thumbnail={service.service_images}
                                     profileImage={service.user_id.profile_image}
-                                    rating={'0'}
-                                    numberOfRatings={'0'}
+                                    rating={service.averageRating}
+                                    numberOfRatings={service.totalReviews}
                                     onClick={() => handleCardClick(service)} // Pass click handler
                                 />
                             ))}
