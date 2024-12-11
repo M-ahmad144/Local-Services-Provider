@@ -125,6 +125,7 @@ const Home = ({ user, update }) => {
   });
   const [selectedUser, setSelectedUser] = useState(null); // Selected user for deletion
   const [loading, setLoading] = useState(false);
+  const [modalType, setModalType] = useState(""); // Modal type (add or delete)
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -191,10 +192,12 @@ const Home = ({ user, update }) => {
 
   const handleDelete = (user) => {
     setSelectedUser(user); // Set the selected user for deletion
+    setModalType("delete"); // Set modal type to delete
     setShowModal(true); // Open the modal
   };
 
   const handleAddUser = () => {
+    setModalType("add"); // Set modal type to add
     setShowModal(true); // Open the modal for adding a new user
   };
 
@@ -340,8 +343,8 @@ const Home = ({ user, update }) => {
         onClose={() => setShowModal(false)}
         onConfirm={handleConfirmDelete}
         onSave={handleInputChange}
-        user={type === "add" ? newUser : selectedUser}
-        type={type === "add" ? "add" : "delete"}
+        user={modalType === "add" ? newUser : selectedUser}
+        type={modalType} // Pass the modal type (add or delete)
         loading={loading}
       />
     </div>
