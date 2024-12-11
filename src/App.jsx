@@ -33,6 +33,7 @@ import AdminDashboard from "./Components/Admin Dashboard/AdminDashboard";
 import { useSelector } from "react-redux";
 import Analytics from "./Components/Service Provider Dashboard/Analytics";
 import Sidebar from "./Components/Setting/Sidebar";
+import Home from "./Components/Admin Dashboard/Home";
 
 function App() {
   const queryClient = new QueryClient();
@@ -86,6 +87,8 @@ function App() {
             <Route path="/success" element={<SuccessPage />} />
             <Route path="/cancel" element={<CancelPage />} />
             <Route path="/analytics" element={<Analytics />} />
+            <Route path="/admin" element={<AdminDashboard />} />
+
           </Route>
         </Routes>
       </Router>

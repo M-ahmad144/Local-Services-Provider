@@ -456,9 +456,10 @@ const AddServiceMultiStepForm = () => {
             ) : (
               <button
                 onClick={onSubmitClick}
+                disabled={isUploading}
                 className="px-6 py-2 bg-indigo-600 text-white rounded-md"
               >
-                Submit
+                {isUploading ? 'Uploading Image' : 'Submit'}
               </button>
             )}
           </div>
