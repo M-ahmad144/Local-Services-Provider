@@ -18,6 +18,7 @@ const Modal = ({
   loading,
 }) => {
   if (!isOpen) return null;
+  console.log(user)
   return (
     <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50">
       <div className="bg-white shadow-lg p-6 rounded-lg w-96">
@@ -209,6 +210,7 @@ const Home = ({ user, update }) => {
 
     const { name, value } = e.target;
     setNewUser((prev) => ({ ...prev, [name]: value }));
+    setSelectedUser((prev) => ({ ...prev, [name]: value }));
   };
 
   const columns = useMemo(
@@ -312,6 +314,7 @@ const Home = ({ user, update }) => {
         setLoading(false);
         setShowModal(false);
         toast.success("User updated successfully!");
+        setNewUser({ fullname: "", email: "", role: "", verify: false });
       } else {
         toast.error("Failed to update user.");
         setLoading(false);
